@@ -29,13 +29,6 @@ export default function Landing() {
     }
   }, [isAuthenticated, login]);
 
-  // Show limit modal when user is at limit
-  useEffect(() => {
-    if (usageData?.isAtLimit && !showLimitModal) {
-      setShowLimitModal(true);
-    }
-  }, [usageData?.isAtLimit, showLimitModal]);
-
   const handleGenerate = () => {
     if (!user) return;
     

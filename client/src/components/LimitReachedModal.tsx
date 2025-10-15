@@ -19,7 +19,7 @@ export function LimitReachedModal({ isOpen, onClose, onUpgrade }: LimitReachedMo
   }, [isOpen]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent 
         className="sm:max-w-md"
         data-testid="modal-limit-reached"
