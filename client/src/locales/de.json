@@ -1,0 +1,142 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "submit": "Absenden",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "sort": "Sortieren",
+    "clear": "Löschen",
+    "apply": "Anwenden",
+    "learnMore": "Mehr Erfahren",
+    "getStarted": "Loslegen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "pricing": "Preise",
+    "qa": "Fragen",
+    "privacy": "Datenschutz",
+    "terms": "Bedingungen",
+    "status": "Status",
+    "language": "Sprache"
+  },
+  "hero": {
+    "title": "Erstellen Sie Apps 10× Schneller mit KI",
+    "subtitle": "Verwandeln Sie Ideen in produktionsreife Anwendungen in Minuten, nicht Monaten.",
+    "cta": {
+      "start": "Kostenlos Starten",
+      "demo": "2-Minuten-Demo Ansehen"
+    },
+    "badge": "50% Launch-Rabatt"
+  },
+  "pricing": {
+    "title": "Einfache, Transparente Preise",
+    "subtitle": "Wählen Sie den Plan, der zu Ihren Bedürfnissen passt. Upgrade oder Downgrade jederzeit.",
+    "free": {
+      "name": "Kostenlos",
+      "price": "0 €",
+      "period": "für immer",
+      "description": "Perfekt zum Ausprobieren von FlashFusion",
+      "features": [
+        "10 Generierungen pro Monat",
+        "Basis-Vorlagen",
+        "Community-Support",
+        "Nur öffentliche Projekte"
+      ],
+      "cta": "Kostenlos Starten"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "49 €",
+      "period": "pro Monat",
+      "description": "Für professionelle Entwickler",
+      "features": [
+        "Unbegrenzte Generierungen",
+        "Premium-Vorlagen",
+        "Prioritäts-Support",
+        "Private Projekte",
+        "Eigene Domains",
+        "Erweiterte KI-Modelle"
+      ],
+      "cta": "Pro-Test Starten",
+      "popular": "Am Beliebtesten"
+    },
+    "enterprise": {
+      "name": "Unternehmen",
+      "price": "Individuell",
+      "period": "kontaktieren Sie uns",
+      "description": "Für Teams und Organisationen",
+      "features": [
+        "Alles in Pro",
+        "Dedizierter Support",
+        "Benutzerdefiniertes KI-Training",
+        "SLA-Garantien",
+        "On-Premise-Bereitstellung",
+        "Mengenrabatte"
+      ],
+      "cta": "Vertrieb Kontaktieren"
+    }
+  },
+  "usage": {
+    "limit": "Sie haben {{current}} von {{limit}} Generierungen in diesem Monat verwendet",
+    "warning": "Sie nähern sich Ihrem monatlichen Limit ({{percent}}% verwendet)",
+    "exceeded": "Monatliches Limit erreicht",
+    "upgradePrompt": "Upgrade auf Pro für unbegrenzte Generierungen",
+    "resetTime": "Ihr Limit wird in {{time}} zurückgesetzt"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Haben Sie bereits ein Konto?"
+  },
+  "email": {
+    "subscribe": "Abonnieren Sie unseren Newsletter",
+    "placeholder": "Geben Sie Ihre E-Mail ein",
+    "button": "Abonnieren",
+    "success": "Vielen Dank für Ihr Abonnement!",
+    "error": "Abonnement fehlgeschlagen. Bitte versuchen Sie es erneut."
+  },
+  "consent": {
+    "title": "Wir verwenden Cookies",
+    "description": "Wir verwenden Cookies, um Ihr Browsing-Erlebnis zu verbessern und unseren Traffic zu analysieren. Durch Klicken auf 'Akzeptieren' stimmen Sie unserer Verwendung von Cookies zu.",
+    "accept": "Alle Akzeptieren",
+    "reject": "Alle Ablehnen",
+    "customize": "Anpassen"
+  },
+  "offline": {
+    "title": "Sie sind Offline",
+    "description": "Es sieht so aus, als hätten Sie Ihre Internetverbindung verloren. Überprüfen Sie Ihr Netzwerk und versuchen Sie es erneut.",
+    "retry": "Erneut Versuchen",
+    "cached": "Einige Funktionen können offline aus Ihrem Cache verfügbar sein."
+  },
+  "pwa": {
+    "install": {
+      "title": "FlashFusion Installieren",
+      "description": "Schnellzugriff von Ihrem Startbildschirm",
+      "button": "Installieren",
+      "notNow": "Nicht Jetzt"
+    }
+  },
+  "footer": {
+    "tagline": "Verwandeln Sie Ideen in Realität mit KI-gesteuerter Entwicklung",
+    "copyright": "© {{year}} FlashFusion. Alle Rechte vorbehalten.",
+    "product": "Produkt",
+    "company": "Unternehmen",
+    "legal": "Rechtliches",
+    "social": "Folgen Sie Uns"
+  }
+}

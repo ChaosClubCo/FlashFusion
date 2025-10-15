@@ -1,0 +1,142 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "clear": "Limpiar",
+    "apply": "Aplicar",
+    "learnMore": "Más Información",
+    "getStarted": "Comenzar"
+  },
+  "nav": {
+    "home": "Inicio",
+    "pricing": "Precios",
+    "qa": "Preguntas",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "status": "Estado",
+    "language": "Idioma"
+  },
+  "hero": {
+    "title": "Construye Apps 10× Más Rápido con IA",
+    "subtitle": "Transforma ideas en aplicaciones listas para producción en minutos, no meses.",
+    "cta": {
+      "start": "Comenzar Gratis",
+      "demo": "Ver Demo de 2 Minutos"
+    },
+    "badge": "50% de Descuento de Lanzamiento"
+  },
+  "pricing": {
+    "title": "Precios Simples y Transparentes",
+    "subtitle": "Elige el plan que se adapte a tus necesidades. Actualiza o reduce en cualquier momento.",
+    "free": {
+      "name": "Gratis",
+      "price": "$0",
+      "period": "para siempre",
+      "description": "Perfecto para probar FlashFusion",
+      "features": [
+        "10 generaciones por mes",
+        "Plantillas básicas",
+        "Soporte comunitario",
+        "Solo proyectos públicos"
+      ],
+      "cta": "Comenzar Gratis"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$49",
+      "period": "por mes",
+      "description": "Para desarrolladores profesionales",
+      "features": [
+        "Generaciones ilimitadas",
+        "Plantillas premium",
+        "Soporte prioritario",
+        "Proyectos privados",
+        "Dominios personalizados",
+        "Modelos de IA avanzados"
+      ],
+      "cta": "Iniciar Prueba Pro",
+      "popular": "Más Popular"
+    },
+    "enterprise": {
+      "name": "Empresa",
+      "price": "Personalizado",
+      "period": "contáctanos",
+      "description": "Para equipos y organizaciones",
+      "features": [
+        "Todo en Pro",
+        "Soporte dedicado",
+        "Entrenamiento de IA personalizado",
+        "Garantías SLA",
+        "Implementación local",
+        "Descuentos por volumen"
+      ],
+      "cta": "Contactar Ventas"
+    }
+  },
+  "usage": {
+    "limit": "Has usado {{current}} de {{limit}} generaciones este mes",
+    "warning": "Te estás acercando a tu límite mensual ({{percent}}% usado)",
+    "exceeded": "Límite mensual alcanzado",
+    "upgradePrompt": "Actualiza a Pro para generaciones ilimitadas",
+    "resetTime": "Tu límite se restablece en {{time}}"
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?"
+  },
+  "email": {
+    "subscribe": "Suscríbete a nuestro boletín",
+    "placeholder": "Ingresa tu correo",
+    "button": "Suscribirse",
+    "success": "¡Gracias por suscribirte!",
+    "error": "La suscripción falló. Inténtalo de nuevo."
+  },
+  "consent": {
+    "title": "Usamos cookies",
+    "description": "Usamos cookies para mejorar tu experiencia de navegación y analizar nuestro tráfico. Al hacer clic en 'Aceptar', consientes nuestro uso de cookies.",
+    "accept": "Aceptar Todo",
+    "reject": "Rechazar Todo",
+    "customize": "Personalizar"
+  },
+  "offline": {
+    "title": "Estás Desconectado",
+    "description": "Parece que has perdido tu conexión a Internet. Verifica tu red e inténtalo de nuevo.",
+    "retry": "Intentar de Nuevo",
+    "cached": "Algunas funciones pueden estar disponibles sin conexión desde tu caché."
+  },
+  "pwa": {
+    "install": {
+      "title": "Instalar FlashFusion",
+      "description": "Obtén acceso rápido desde tu pantalla de inicio",
+      "button": "Instalar",
+      "notNow": "Ahora No"
+    }
+  },
+  "footer": {
+    "tagline": "Transforma ideas en realidad con desarrollo impulsado por IA",
+    "copyright": "© {{year}} FlashFusion. Todos los derechos reservados.",
+    "product": "Producto",
+    "company": "Empresa",
+    "legal": "Legal",
+    "social": "Síguenos"
+  }
+}

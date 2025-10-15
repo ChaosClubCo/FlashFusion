@@ -8,7 +8,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Skeleton } from "@/components/Skeleton";
 import { InstallPWA } from "@/components/InstallPWA";
+import { Navigation } from "@/components/Navigation";
 import { featureFlags } from "@/utils/featureFlags";
+import { I18nProvider } from "@/i18n";
 
 // Lazy load pages for code splitting
 const Landing = lazy(() => import("@/pages/Landing"));
@@ -52,15 +54,18 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-            {featureFlags.PWA_ENABLED && <InstallPWA />}
-          </TooltipProvider>
-        </QueryClientProvider>
-      </HelmetProvider>
+      <I18nProvider>
+        <HelmetProvider>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              {featureFlags.I18N_ENABLED && <Navigation />}
+              <Toaster />
+              <Router />
+              {featureFlags.PWA_ENABLED && <InstallPWA />}
+            </TooltipProvider>
+          </QueryClientProvider>
+        </HelmetProvider>
+      </I18nProvider>
     </ErrorBoundary>
   );
 }

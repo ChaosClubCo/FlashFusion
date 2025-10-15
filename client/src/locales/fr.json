@@ -1,0 +1,142 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "clear": "Effacer",
+    "apply": "Appliquer",
+    "learnMore": "En Savoir Plus",
+    "getStarted": "Commencer"
+  },
+  "nav": {
+    "home": "Accueil",
+    "pricing": "Tarifs",
+    "qa": "Questions",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "status": "Statut",
+    "language": "Langue"
+  },
+  "hero": {
+    "title": "Créez des Applications 10× Plus Vite avec l'IA",
+    "subtitle": "Transformez vos idées en applications prêtes pour la production en minutes, pas en mois.",
+    "cta": {
+      "start": "Commencer Gratuitement",
+      "demo": "Voir la Démo de 2 Minutes"
+    },
+    "badge": "50% de Réduction de Lancement"
+  },
+  "pricing": {
+    "title": "Tarification Simple et Transparente",
+    "subtitle": "Choisissez le plan qui correspond à vos besoins. Mettez à niveau ou rétrogradez à tout moment.",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 €",
+      "period": "pour toujours",
+      "description": "Parfait pour essayer FlashFusion",
+      "features": [
+        "10 générations par mois",
+        "Modèles de base",
+        "Support communautaire",
+        "Projets publics uniquement"
+      ],
+      "cta": "Commencer Gratuitement"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "49 €",
+      "period": "par mois",
+      "description": "Pour les développeurs professionnels",
+      "features": [
+        "Générations illimitées",
+        "Modèles premium",
+        "Support prioritaire",
+        "Projets privés",
+        "Domaines personnalisés",
+        "Modèles IA avancés"
+      ],
+      "cta": "Essai Pro Gratuit",
+      "popular": "Le Plus Populaire"
+    },
+    "enterprise": {
+      "name": "Entreprise",
+      "price": "Personnalisé",
+      "period": "contactez-nous",
+      "description": "Pour les équipes et organisations",
+      "features": [
+        "Tout dans Pro",
+        "Support dédié",
+        "Formation IA personnalisée",
+        "Garanties SLA",
+        "Déploiement sur site",
+        "Remises sur volume"
+      ],
+      "cta": "Contacter les Ventes"
+    }
+  },
+  "usage": {
+    "limit": "Vous avez utilisé {{current}} sur {{limit}} générations ce mois-ci",
+    "warning": "Vous approchez de votre limite mensuelle ({{percent}}% utilisé)",
+    "exceeded": "Limite mensuelle atteinte",
+    "upgradePrompt": "Passez à Pro pour des générations illimitées",
+    "resetTime": "Votre limite se réinitialise dans {{time}}"
+  },
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'Inscrire",
+    "signOut": "Se Déconnecter",
+    "email": "E-mail",
+    "password": "Mot de Passe",
+    "forgotPassword": "Mot de passe oublié?",
+    "noAccount": "Vous n'avez pas de compte?",
+    "hasAccount": "Vous avez déjà un compte?"
+  },
+  "email": {
+    "subscribe": "Abonnez-vous à notre newsletter",
+    "placeholder": "Entrez votre e-mail",
+    "button": "S'abonner",
+    "success": "Merci de vous être abonné!",
+    "error": "L'abonnement a échoué. Veuillez réessayer."
+  },
+  "consent": {
+    "title": "Nous utilisons des cookies",
+    "description": "Nous utilisons des cookies pour améliorer votre expérience de navigation et analyser notre trafic. En cliquant sur 'Accepter', vous consentez à notre utilisation des cookies.",
+    "accept": "Tout Accepter",
+    "reject": "Tout Rejeter",
+    "customize": "Personnaliser"
+  },
+  "offline": {
+    "title": "Vous êtes Hors Ligne",
+    "description": "Il semble que vous ayez perdu votre connexion Internet. Vérifiez votre réseau et réessayez.",
+    "retry": "Réessayer",
+    "cached": "Certaines fonctionnalités peuvent être disponibles hors ligne depuis votre cache."
+  },
+  "pwa": {
+    "install": {
+      "title": "Installer FlashFusion",
+      "description": "Accédez rapidement depuis votre écran d'accueil",
+      "button": "Installer",
+      "notNow": "Pas Maintenant"
+    }
+  },
+  "footer": {
+    "tagline": "Transformez vos idées en réalité avec le développement alimenté par l'IA",
+    "copyright": "© {{year}} FlashFusion. Tous droits réservés.",
+    "product": "Produit",
+    "company": "Entreprise",
+    "legal": "Légal",
+    "social": "Suivez-nous"
+  }
+}

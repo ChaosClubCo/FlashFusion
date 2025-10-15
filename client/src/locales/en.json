@@ -1,0 +1,142 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clear": "Clear",
+    "apply": "Apply",
+    "learnMore": "Learn More",
+    "getStarted": "Get Started"
+  },
+  "nav": {
+    "home": "Home",
+    "pricing": "Pricing",
+    "qa": "Q&A",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "status": "Status",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Build Apps 10× Faster with AI",
+    "subtitle": "Transform ideas into production-ready applications in minutes, not months.",
+    "cta": {
+      "start": "Start Building Free",
+      "demo": "Watch 2-Minute Demo"
+    },
+    "badge": "50% Launch Discount"
+  },
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the plan that fits your needs. Upgrade or downgrade anytime.",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "period": "forever",
+      "description": "Perfect for trying out FlashFusion",
+      "features": [
+        "10 generations per month",
+        "Basic templates",
+        "Community support",
+        "Public projects only"
+      ],
+      "cta": "Start Free"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$49",
+      "period": "per month",
+      "description": "For professional developers",
+      "features": [
+        "Unlimited generations",
+        "Premium templates",
+        "Priority support",
+        "Private projects",
+        "Custom domains",
+        "Advanced AI models"
+      ],
+      "cta": "Start Pro Trial",
+      "popular": "Most Popular"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "Custom",
+      "period": "contact us",
+      "description": "For teams and organizations",
+      "features": [
+        "Everything in Pro",
+        "Dedicated support",
+        "Custom AI training",
+        "SLA guarantees",
+        "On-premise deployment",
+        "Volume discounts"
+      ],
+      "cta": "Contact Sales"
+    }
+  },
+  "usage": {
+    "limit": "You've used {{current}} of {{limit}} generations this month",
+    "warning": "You're approaching your monthly limit ({{percent}}% used)",
+    "exceeded": "Monthly limit reached",
+    "upgradePrompt": "Upgrade to Pro for unlimited generations",
+    "resetTime": "Your limit resets in {{time}}"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "email": {
+    "subscribe": "Subscribe to our newsletter",
+    "placeholder": "Enter your email",
+    "button": "Subscribe",
+    "success": "Thanks for subscribing!",
+    "error": "Subscription failed. Please try again."
+  },
+  "consent": {
+    "title": "We use cookies",
+    "description": "We use cookies to enhance your browsing experience and analyze our traffic. By clicking 'Accept', you consent to our use of cookies.",
+    "accept": "Accept All",
+    "reject": "Reject All",
+    "customize": "Customize"
+  },
+  "offline": {
+    "title": "You're Offline",
+    "description": "It looks like you've lost your internet connection. Check your network and try again.",
+    "retry": "Try Again",
+    "cached": "Some features may be available offline from your cache."
+  },
+  "pwa": {
+    "install": {
+      "title": "Install FlashFusion",
+      "description": "Get quick access from your home screen",
+      "button": "Install",
+      "notNow": "Not Now"
+    }
+  },
+  "footer": {
+    "tagline": "Transform ideas into reality with AI-powered development",
+    "copyright": "© {{year}} FlashFusion. All rights reserved.",
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "social": "Follow Us"
+  }
+}
