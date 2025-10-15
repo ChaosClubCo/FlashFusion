@@ -3,7 +3,7 @@ import type { FeatureFlags } from '@shared/schema';
 // Feature flags configuration
 export const featureFlags: FeatureFlags = {
   PROMO_LAUNCH50: true,
-  PWA_ENABLED: false,
+  PWA_ENABLED: true,
   I18N_ENABLED: false,
   UPGRADE_MODAL_V2: false,
   REFERRAL_ENABLED: false,

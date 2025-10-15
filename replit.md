@@ -8,19 +8,22 @@ The platform is built as a landing page and marketing site showcasing AI develop
 
 ## Project Status
 
-**✅ MVP COMPLETE - Ready for Deployment**
+**✅ MVP COMPLETE - Production Features Implemented**
 
-All core features have been implemented and verified through comprehensive end-to-end testing:
+All core features have been implemented and verified through comprehensive testing:
 
 - **Frontend Excellence**: All pages and components built with exceptional visual quality, cinematic animations, and WCAG 2.1 AA accessibility
-- **Backend Functional**: All API endpoints operational with proper validation and error handling
-- **Usage Tracking**: Complete quota management system with 80% warning threshold and limit enforcement
+- **Database Persistence**: PostgreSQL with Drizzle ORM - all data persists across restarts
+- **Rate Limiting**: Atomic database-level rate limiting prevents concurrent request race conditions
+- **Generation Queue**: Job queue with persistence, rehydration on restart, and retry logic
+- **PWA Support**: Service worker, manifest, offline page, install prompts with production-ready PNG icons
+- **Usage Tracking**: Complete quota management system with plan-based limits (Free: 10/hour, Pro: 100/hour, Enterprise: unlimited)
 - **Modal System**: LimitReachedModal properly closes via Escape, close button, and "Maybe Later" action
 - **Email Capture**: Subscription system working with success feedback
 - **Consent Management**: Cookie/analytics banner properly gates event tracking
-- **Navigation**: All routes functional (Landing, Pricing, QA, Privacy, Terms, Status, 404)
+- **Navigation**: All routes functional (Landing, Pricing, QA, Privacy, Terms, Status, Offline, 404)
 - **Accessibility**: Skip links, keyboard navigation, focus management, and 2px orange focus indicators verified
-- **Testing**: Two comprehensive e2e test suites passed successfully
+- **Testing**: Comprehensive e2e test suites verify all functionality
 
 ## User Preferences
 
@@ -69,10 +72,16 @@ Preferred communication style: Simple, everyday language.
 
 **Server Framework**: Express.js with TypeScript providing RESTful API endpoints.
 
-**Data Storage**: In-memory storage implementation (MemStorage class) for development/demo purposes. The architecture is designed to support PostgreSQL via Drizzle ORM as indicated by the database configuration, but currently uses memory-based storage for simplicity.
+**Data Storage**: PostgreSQL database with Drizzle ORM for production-ready persistence. DatabaseStorage class implements all CRUD operations with proper transaction support and atomic operations for race-condition-free updates.
+
+**Rate Limiting**: Atomic database-level rate limiting middleware enforces plan-based hourly limits using single-statement UPDATE with WHERE clause guards to prevent concurrent request double-counting. Rate limit windows reset after 1 hour.
+
+**Generation Queue**: Request queuing system with job persistence, status tracking (pending/processing/completed/failed), and automatic rehydration of pending jobs on server restart. Implements retry logic for failed jobs.
 
 **API Endpoints**:
 - `/api/flags` - Feature flags configuration
+- `/api/generate` - Generate AI application (rate-limited, queued)
+- `/api/jobs/:id` - Get generation job status
 - `/api/subscribe` - Email subscription creation
 - `/api/usage/check` - Usage limit verification
 - `/api/usage/increment` - Usage tracking and limit enforcement
@@ -127,6 +136,20 @@ Preferred communication style: Simple, everyday language.
 
 **Internationalization Stub**: Simple translation system (i18n.ts) with locale support (en/es) ready for expansion. Currently demonstrates structure without full implementation.
 
+### Progressive Web App (PWA)
+
+**Service Worker** (`client/public/service-worker.js`): Network-first caching strategy with offline fallback. Precaches essential assets (/, /offline, /manifest.json) and caches successful responses for offline access. Shows offline page when network fails for navigation requests.
+
+**Web App Manifest** (`client/public/manifest.json`): Complete PWA manifest with app metadata, theme colors (#f97316 orange primary, #0e0e10 background), app shortcuts, and production-ready PNG icons (72x72 to 512x512) with maskable purpose for adaptive icons.
+
+**Offline Experience**: Dedicated offline page (`/offline`) displays when network connection fails. Includes retry button to attempt reconnection. Service worker automatically serves cached content when available.
+
+**Install Prompts**: InstallPWA component captures and displays "Add to Home Screen" prompts when available. Appears as dismissible banner in bottom-right corner. User preferences persist in localStorage to prevent repeated prompts.
+
+**PWA Utilities** (`client/src/utils/pwa.ts`): Service worker registration, install prompt management, PWA detection (standalone mode), and update notifications. Auto-checks for service worker updates hourly.
+
+**Icon Generation**: PWA icons automatically generated as PNG bitmaps (72x72 to 512x512) using Sharp. SVG source files preserved for future modifications. Conversion script available at `scripts/convert-svg-to-png.mjs`.
+
 ## External Dependencies
 
 ### Third-Party Services
@@ -139,15 +162,17 @@ Preferred communication style: Simple, everyday language.
 
 ### Database
 
-**ORM**: Drizzle ORM configured for PostgreSQL with schema definitions in shared/schema.ts. Connection expects DATABASE_URL environment variable. Currently bypassed in favor of in-memory storage for demo purposes.
+**ORM**: Drizzle ORM configured for PostgreSQL with schema definitions in shared/schema.ts. Connection expects DATABASE_URL environment variable. Database operations use transactions for atomicity and proper error handling.
 
 **Schema Structure**:
-- users: Authentication and plan management
+- users: Authentication, plan management, usage tracking
 - emailSubscriptions: Marketing contacts
 - analyticsEvents: Privacy-gated usage tracking
+- generationJobs: AI generation requests with status tracking
+- rateLimits: Hourly rate limit windows per user
 - Feature flags managed in application memory
 
-**Migration System**: Drizzle Kit configured with output to ./migrations directory, though migrations not yet generated.
+**Migration System**: Drizzle Kit configured with output to ./migrations directory. Use `npm run db:push` to sync schema changes safely.
 
 ### NPM Dependencies
 
@@ -170,7 +195,8 @@ Preferred communication style: Simple, everyday language.
 ### Environment Requirements
 
 **Required Environment Variables**:
-- DATABASE_URL: PostgreSQL connection string (currently optional due to in-memory fallback)
+- DATABASE_URL: PostgreSQL connection string (required for persistence)
+- SESSION_SECRET: Express session secret
 - NODE_ENV: development|production
 
 **Browser Targets**: Modern evergreen browsers with ES2020+ support. Graceful degradation for reduced motion preferences and missing features.

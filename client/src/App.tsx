@@ -7,6 +7,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Skeleton } from "@/components/Skeleton";
+import { InstallPWA } from "@/components/InstallPWA";
+import { featureFlags } from "@/utils/featureFlags";
 
 // Lazy load pages for code splitting
 const Landing = lazy(() => import("@/pages/Landing"));
@@ -15,6 +17,7 @@ const QA = lazy(() => import("@/pages/QA"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const Status = lazy(() => import("@/pages/Status"));
+const Offline = lazy(() => import("@/pages/Offline"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function PageLoader() {
@@ -39,6 +42,7 @@ function Router() {
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/status" component={Status} />
+        <Route path="/offline" component={Offline} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
@@ -53,6 +57,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
+            {featureFlags.PWA_ENABLED && <InstallPWA />}
           </TooltipProvider>
         </QueryClientProvider>
       </HelmetProvider>
