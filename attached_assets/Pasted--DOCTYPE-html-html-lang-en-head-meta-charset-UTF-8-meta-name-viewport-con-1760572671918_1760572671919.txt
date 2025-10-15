@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashFusion - Professional AI Image Generation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-700: #4f46e5;
+            --primary-600: #6366f1;
+            --primary-500: #8b5cf6;
+            --primary-400: #a78bfa;
+            --primary-300: #c4b5fd;
+            --secondary-600: #ec4899;
+            --secondary-500: #f472b6;
+            --secondary-400: #f9a8d4;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --gray-950: #020617;
+            --gray-900: #0f172a;
+            --gray-800: #1e293b;
+            --gray-700: #334155;
+            --gray-600: #475569;
+            --gray-500: #64748b;
+            --gray-400: #94a3b8;
+            --gray-300: #cbd5e1;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --white: #ffffff;
+            --success: #22c55e;
+            --warning: #eab308;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 40px rgba(139, 92, 246, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), 0 0 60px rgba(139, 92, 246, 0.3); }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: var(--white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--secondary-500) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, var(--primary-300) 0%, var(--secondary-400) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .credits-badge {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0.05) 100%);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 100px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--secondary-400);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .credits-badge:hover {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0.08) 100%);
+            border-color: rgba(236, 72, 153, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .credits-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--secondary-500) 0%, var(--accent-amber) 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%);
+            color: var(--white);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4), 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 32px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 100px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-300);
+            margin-bottom: 24px;
+            backdrop-filter: blur(12px);
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--white) 0%, var(--gray-300) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary-400) 0%, var(--secondary-500) 50%, var(--accent-amber) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            line-height: 1.6;
+            color: var(--gray-400);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-weight: 400;
+        }
+
+        /* Generator Section */
+        .generator-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(24px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 48px;
+            margin-bottom: 64px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: scaleIn 0.6s ease-out 0.2s backwards;
+        }
+
+        .input-group {
+            margin-bottom: 32px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-300);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .prompt-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 24px;
+            color: var(--white);
+            font-size: 16px;
+            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            min-height: 140px;
+            resize: vertical;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(12px);
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 8px 24px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .prompt-input::placeholder {
+            color: var(--gray-500);
+        }
+
+        /* Style Presets */
+        .presets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .preset-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .preset-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .preset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .preset-card:hover::before,
+        .preset-card.selected::before {
+            opacity: 1;
+        }
+
+        .preset-card.selected {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: transparent;
+        }
+
+        .preset-icon {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 12px;
+            transition: transform 0.3s;
+        }
+
+        .preset-card:hover .preset-icon {
+            transform: scale(1.1);
+        }
+
+        .preset-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .preset-desc {
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        /* Settings Row */
+        .settings-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .setting-item {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        .setting-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-400);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .setting-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        /* Generate Actions */
+        .generate-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn-generate {
+            padding: 16px 48px;
+            font-size: 16px;
+            border-radius: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-generate .icon {
+            font-size: 20px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(24px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 32px;
+            margin-bottom: 64px;
+            display: none;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .progress-section.active {
+            display: block;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-400);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-600) 0%, var(--primary-400) 50%, var(--secondary-500) 100%);
+            border-radius: 100px;
+            transition: width 0.3s ease;
+            position: relative;
+            width: 0%;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* Gallery */
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.02em;
+        }
+
+        .gallery-filters {
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--gray-300);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary-500);
+            color: var(--primary-300);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .image-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+
+        .image-card:nth-child(1) { animation-delay: 0.1s; }
+        .image-card:nth-child(2) { animation-delay: 0.2s; }
+        .image-card:nth-child(3) { animation-delay: 0.3s; }
+        .image-card:nth-child(4) { animation-delay: 0.4s; }
+        .image-card:nth-child(5) { animation-delay: 0.5s; }
+        .image-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .image-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(99, 102, 241, 0.5);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            background-size: 200% 200%;
+            animation: shimmer 3s infinite;
+        }
+
+        .image-content {
+            padding: 20px;
+        }
+
+        .image-prompt {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--gray-300);
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .image-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .image-time {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .image-style {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-400);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(24px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(40px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            padding: 32px 32px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 24px;
+            color: var(--gray-400);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .modal-prompt {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--gray-300);
+            margin-bottom: 24px;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(24px);
+            border-radius: 16px;
+            padding: 16px 24px;
+            border-left: 4px solid var(--success);
+            color: var(--white);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.active {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--error);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-message strong {
+            font-weight: 700;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(24px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2500;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 64px;
+            height: 64px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px 20px;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .generator-card {
+                padding: 24px;
+            }
+
+            .presets-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .generate-actions {
+                flex-direction: column;
+            }
+
+            .btn-generate {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <nav>
+                <div class="logo">
+                    <div class="logo-icon">✨</div>
+                    <span class="logo-text">FlashFusion</span>
+                </div>
+                <div class="nav-actions">
+                    <div class="credits-badge">
+                        <div class="credits-icon"></div>
+                        <span>250 Credits</span>
+                    </div>
+                    <button class="btn btn-secondary" onclick="showModal()">Gallery</button>
+                    <button class="btn btn-primary">Upgrade Pro</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-badge">
+                    <span>✨</span>
+                    <span>Powered by Advanced AI</span>
+                </div>
+                <h1 class="hero-title">
+                    Create <span class="hero-gradient">Stunning Visuals</span><br>
+                    In Seconds
+                </h1>
+                <p class="hero-subtitle">
+                    Transform your imagination into breathtaking AI-generated images with our professional-grade platform
+                </p>
+            </section>
+
+            <section class="generator-card">
+                <div class="input-group">
+                    <label class="input-label">Your Prompt</label>
+                    <textarea 
+                        class="prompt-input" 
+                        id="promptInput"
+                        placeholder="Describe your vision in detail... e.g., 'A cyberpunk cityscape at night with neon-lit skyscrapers reflecting in rain-soaked streets, flying cars weaving between buildings, cinematic lighting, hyper-detailed, 8k quality'"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Choose Your Style</label>
+                    <div class="presets-grid">
+                        <div class="preset-card selected" onclick="selectPreset(this)">
+                            <div class="preset-icon">📸</div>
+                            <div class="preset-name">Photorealistic</div>
+                            <div class="preset-desc">Ultra-realistic</div>
+                        </div>
+                        <div class="preset-card" onclick="selectPreset(this)">
+                            <div class="preset-icon">🎨</div>
+                            <div class="preset-name">Digital Art</div>
+                            <div class="preset-desc">Artistic render</div>
+                        </div>
+                        <div class="preset-card" onclick="selectPreset(this)">
+                            <div class="preset-icon">✏️</div>
+                            <div class="preset-name">Sketch</div>
+                            <div class="preset-desc">Hand-drawn</div>
+                        </div>
+                        <div class="preset-card" onclick="selectPreset(this)">
+                            <div class="preset-icon">🎬</div>
+                            <div class="preset-name">Cinematic</div>
+                            <div class="preset-desc">Movie quality</div>
+                        </div>
+                        <div class="preset-card" onclick="selectPreset(this)">
+                            <div class="preset-icon">🎭</div>
+                            <div class="preset-name">Anime</div>
+                            <div class="preset-desc">Japanese style</div>
+                        </div>
+                        <div class="preset-card" onclick="selectPreset(this)">
+                            <div class="preset-icon">🔮</div>
+                            <div class="preset-name">Fantasy</div>
+                            <div class="preset-desc">Magical realm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="setting-item">
+                        <div class="setting-title">Aspect Ratio</div>
+                        <div class="setting-value">16:9</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-title">Quality</div>
+                        <div class="setting-value">Ultra HD</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-title">Resolution</div>
+                        <div class="setting-value">2048×1024</div>
+                    </div>
+                </div>
+
+                <div class="generate-actions">
+                    <button class="btn btn-secondary">
+                        Advanced Options
+                    </button>
+                    <button class="btn btn-primary btn-generate" onclick="generateImage()">
+                        <span class="icon">✨</span>
+                        <span>Generate Image</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="progress-section" id="progressSection">
+                <div class="progress-header">
+                    <span class="progress-title">Generating your masterpiece...</span>
+                    <span class="progress-percentage" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </section>
+
+            <section>
+                <div class="gallery-header">
+                    <h2 class="section-title">Recent Creations</h2>
+                    <div class="gallery-filters">
+                        <button class="filter-btn active">All</button>
+                        <button class="filter-btn">Today</button>
+                        <button class="filter-btn">This Week</button>
+                    </div>
+                </div>
+                <div class="gallery-grid">
+                    <div class="image-card" onclick="showModal()">
+                        <div class="image-placeholder">🌄</div>
+                        <div class="image-content">
+                            <p class="image-prompt">A serene mountain landscape at sunset with vibrant orange and purple skies reflecting on a crystal-clear alpine lake</p>
+                            <div class="image-meta">
+                                <span class="image-time">2 min ago</span>
+                                <span class="image-style">Photorealistic</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-card" onclick="showModal()">
+                        <div class="image-placeholder">🦋</div>
+                        <div class="image-content">
+                            <p class="image-prompt">Ethereal butterfly with iridescent wings in a magical enchanted forest with glowing mushrooms and fireflies</p>
+                            <div class="image-meta">
+                                <span class="image-time">5 min ago</span>
+                                <span class="image-style">Fantasy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-card" onclick="showModal()">
+                        <div class="image-placeholder">🏙️</div>
+                        <div class="image-content">
+                            <p class="image-prompt">Futuristic cyberpunk cityscape with neon lights, holographic billboards, and flying cars in the rain</p>
+                            <div class="image-meta">
+                                <span class="image-time">12 min ago</span>
+                                <span class="image-style">Cinematic</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-card" onclick="showModal()">
+                        <div class="image-placeholder">🐉</div>
+                        <div class="image-content">
+                            <p class="image-prompt">Majestic dragon perched on ancient stone ruins under a starlit sky with aurora borealis dancing above</p>
+                            <div class="image-meta">
+                                <span class="image-time">18 min ago</span>
+                                <span class="image-style">Digital Art</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-card" onclick="showModal()">
+                        <div class="image-placeholder">🌊</div>
+                        <div class="image-content">
+                            <p class="image-prompt">Powerful ocean waves crashing against dramatic coastal cliffs during a storm with dramatic lighting</p>
+                            <div class="image-meta">
+                                <span class="image-time">25 min ago</span>
+                                <span class="image-style">Photorealistic</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-card" onclick="showModal()">
+                        <div class="image-placeholder">🌸</div>
+                        <div class="image-content">
+                            <p class="image-prompt">Cherry blossom garden in full bloom with traditional Japanese architecture and stone pathways</p>
+                            <div class="image-meta">
+                                <span class="image-time">32 min ago</span>
+                                <span class="image-style">Anime</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 class="modal-title">Image Details</h3>
+                    <div class="modal-close" onclick="closeModal()">×</div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-image">🌄</div>
+                    <p class="modal-prompt">
+                        A serene mountain landscape at sunset with vibrant orange and purple skies reflecting on a crystal-clear alpine lake, snow-capped peaks in the distance, photorealistic, ultra-detailed, 8k quality
+                    </p>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="showToast('Downloaded!', 'success')">
+                            📥 Download
+                        </button>
+                        <button class="btn btn-secondary" onclick="showToast('Remix started', 'success')">
+                            🎨 Remix
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast" id="toast">
+            <span class="toast-icon">✅</span>
+            <div class="toast-message">
+                <strong>Success!</strong> Image generated successfully
+            </div>
+        </div>
+
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <script>
+        function selectPreset(element) {
+            document.querySelectorAll('.preset-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        function generateImage() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            if (!prompt) {
+                showToast('Please enter a prompt', 'error');
+                return;
+            }
+
+            const progressSection = document.getElementById('progressSection');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            progressSection.classList.add('active');
+            progressSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                progressFill.style.width = progress + '%';
+                progressPercent.textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressSection.classList.remove('active');
+                        progressFill.style.width = '0%';
+                        progressPercent.textContent = '0%';
+                        showToast('Image generated successfully!', 'success');
+                    }, 500);
+                }
+            }, 150);
+        }
+
+        function showModal() {
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = type === 'success' ? '✅' : '❌';
+            toast.innerHTML = `
+                <span class="toast-icon">${icon}</span>
+                <div class="toast-message">
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                </div>
+            `;
+            toast.className = `toast ${type}`;
+            toast.classList.add('active');
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3500);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
