@@ -2,7 +2,7 @@
 
 ## Overview
 
-FlashFusion is a cinematic AI-powered development platform designed to rapidly transform ideas into full-stack applications. It functions as a production-ready landing page and marketing site showcasing AI development capabilities, featuring tiered pricing (Free, Pro, Enterprise) and usage-based access control. The platform emphasizes best-in-class web development practices, including WCAG 2.1 AA accessibility, CSP-safe patterns, and optimized performance. The project has completed its MVP, with all core features implemented and verified, including a robust frontend, PostgreSQL persistence with Drizzle ORM, atomic rate limiting, a persistent generation queue, PWA support, full internationalization, and comprehensive usage tracking.
+FlashFusion is a cinematic AI-powered development platform designed to rapidly transform ideas into full-stack applications. It functions as a production-ready landing page and marketing site showcasing AI development capabilities, featuring tiered pricing (Free, Pro, Enterprise) and usage-based access control. The platform emphasizes best-in-class web development practices, including WCAG 2.1 AA accessibility, CSP-safe patterns, and optimized performance. The project has completed its MVP foundation with real AI code generation, and is now implementing authentication, payments, user dashboard, and download features.
 
 ## User Preferences
 
@@ -29,8 +29,9 @@ Preferred communication style: Simple, everyday language.
 **Data Storage**: PostgreSQL with Drizzle ORM for persistence, supporting transactions and atomic operations.
 **Rate Limiting**: Atomic database-level rate limiting middleware enforces plan-based hourly limits.
 **Generation Queue**: Persistent request queuing system with status tracking and retry logic, rehydrating jobs on server restart.
-**API Endpoints**: `/api/flags`, `/api/generate`, `/api/jobs/:id`, `/api/subscribe`, `/api/usage/check`, `/api/usage/increment`, `/api/workflows` (POST/GET/PATCH).
-**Data Models**: Users, Email Subscriptions, Analytics Events, Feature Flags, Workflow Runs.
+**AI Integration**: Replit AI Integrations (OpenAI-compatible) with GPT-5 model for real code generation, no API key required, billed to credits.
+**API Endpoints**: `/api/flags`, `/api/generate`, `/api/jobs/:id`, `/api/subscribe`, `/api/usage/check`, `/api/usage/increment`, `/api/workflows` (POST/GET/PATCH), `/api/generate-code` (POST with SSE streaming).
+**Data Models**: Users, Email Subscriptions, Analytics Events, Feature Flags, Workflow Runs, Generated Projects.
 **Validation**: Zod schemas for request validation, ensuring type safety.
 **Development Server**: Vite integrated as Express middleware for HMR.
 
@@ -42,14 +43,21 @@ Preferred communication style: Simple, everyday language.
 - Zustand Store: Local state management with server UUID synchronization
 - React Query Hooks: useCreateWorkflow, useUpdateWorkflow for API integration
 **Workflows Implemented**:
-1. AI-Powered Creation (4 steps): Select type → Configure → Auto-generate → Complete
+1. AI-Powered Creation (4 steps): Select type → Configure → **Real AI Generation** → Complete
 2. One-Click Publishing (3 steps): Select platforms → Config → Deploy
 3. Creator Commerce (3 steps): Revenue streams → Pricing → Activate
 4. Smart Analytics (3 steps): Select metrics → Configure → Activate
 5. Enterprise Security (2 steps): Security checks → Complete
 6. Quality Assurance (3 steps): Run checks → Configure → Results
 **Persistence**: Full CRUD via `/api/workflows` with Zod validation, MemStorage/DatabaseStorage implementations
-**Features**: Auto-generation with progress tracking, server ID synchronization, step-by-step progress updates, completion status tracking
+**AI Generation Features**: 
+- Real OpenAI GPT-5 integration via Replit AI Integrations
+- Server-Sent Events (SSE) streaming for real-time progress updates
+- Progress milestones: Initialize (10%) → Generating (30%) → Processing (80%) → Saving (95%) → Complete (100%)
+- Database persistence of generated files, metadata (model, instructions, timestamp)
+- Frontend displays real-time status and generated file list with sizes
+- Robust SSE parsing with partial chunk buffering
+- Error handling and graceful degradation
 
 ### Design System
 
@@ -94,8 +102,9 @@ Preferred communication style: Simple, everyday language.
 ### Database
 
 **ORM**: Drizzle ORM for PostgreSQL.
-**Schema Structure**: `users`, `emailSubscriptions`, `analyticsEvents`, `generationJobs`, `rateLimits`, `workflowRuns`.
+**Schema Structure**: `users`, `emailSubscriptions`, `analyticsEvents`, `generationJobs`, `rateLimits`, `workflowRuns`, `generatedProjects`.
 **Migration System**: Drizzle Kit.
+**Generated Projects Table**: Stores AI-generated code with user ID, workflow ID, title, description, project type, files (JSON), metadata (model, instructions, timestamp).
 
 ### NPM Dependencies
 
@@ -106,6 +115,24 @@ Preferred communication style: Simple, everyday language.
 
 ### Environment Requirements
 
-**Environment Variables**: `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`.
+**Environment Variables**: `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`, `AI_INTEGRATIONS_OPENAI_BASE_URL`, `AI_INTEGRATIONS_OPENAI_API_KEY` (auto-set by Replit).
 **Browser Targets**: Modern evergreen browsers.
-**Server Configuration**: Express server with CORS, JSON parsing, and Vite/static file serving.
+**Server Configuration**: Express server with CORS, JSON parsing, Vite/static file serving, and SSE support.
+
+## Recent Changes
+
+**December 2024 - AI Code Generation (Phase 1 Complete)**
+- ✅ Added Replit AI Integrations blueprint for OpenAI-compatible API access
+- ✅ Implemented `/api/generate-code` endpoint with Server-Sent Events streaming
+- ✅ Added `generatedProjects` database table with files, metadata, and workflow tracking
+- ✅ Updated AI Creation workflow to use real GPT-5 model with streaming progress
+- ✅ Robust SSE parsing with partial chunk buffering to prevent JSON parse errors
+- ✅ Database persistence of all generated projects with project ID returned for downloads
+- ✅ Error handling for OpenAI failures with graceful degradation
+- ✅ Architect-approved implementation meeting production-ready standards
+
+**Next Priorities**:
+1. Authentication - Replace demo auth with Replit Auth (Google, GitHub, email/password)
+2. Payments - Integrate Stripe for subscription management and plan upgrades
+3. User Dashboard - Build dashboard with workflow history, usage stats, and project library
+4. Download/Export - Enable users to download generated code as zip files
