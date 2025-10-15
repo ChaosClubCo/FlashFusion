@@ -29,10 +29,27 @@ Preferred communication style: Simple, everyday language.
 **Data Storage**: PostgreSQL with Drizzle ORM for persistence, supporting transactions and atomic operations.
 **Rate Limiting**: Atomic database-level rate limiting middleware enforces plan-based hourly limits.
 **Generation Queue**: Persistent request queuing system with status tracking and retry logic, rehydrating jobs on server restart.
-**API Endpoints**: `/api/flags`, `/api/generate`, `/api/jobs/:id`, `/api/subscribe`, `/api/usage/check`, `/api/usage/increment`.
-**Data Models**: Users, Email Subscriptions, Analytics Events, Feature Flags.
+**API Endpoints**: `/api/flags`, `/api/generate`, `/api/jobs/:id`, `/api/subscribe`, `/api/usage/check`, `/api/usage/increment`, `/api/workflows` (POST/GET/PATCH).
+**Data Models**: Users, Email Subscriptions, Analytics Events, Feature Flags, Workflow Runs.
 **Validation**: Zod schemas for request validation, ensuring type safety.
 **Development Server**: Vite integrated as Express middleware for HMR.
+
+### Workflow System
+
+**Architecture**: Multi-step interactive wizard system with 6 complete workflows demonstrating platform capabilities.
+**Components**: 
+- WorkflowWizard: Reusable wizard shell with progress breadcrumbs and step navigation
+- Zustand Store: Local state management with server UUID synchronization
+- React Query Hooks: useCreateWorkflow, useUpdateWorkflow for API integration
+**Workflows Implemented**:
+1. AI-Powered Creation (4 steps): Select type → Configure → Auto-generate → Complete
+2. One-Click Publishing (3 steps): Select platforms → Config → Deploy
+3. Creator Commerce (3 steps): Revenue streams → Pricing → Activate
+4. Smart Analytics (3 steps): Select metrics → Configure → Activate
+5. Enterprise Security (2 steps): Security checks → Complete
+6. Quality Assurance (3 steps): Run checks → Configure → Results
+**Persistence**: Full CRUD via `/api/workflows` with Zod validation, MemStorage/DatabaseStorage implementations
+**Features**: Auto-generation with progress tracking, server ID synchronization, step-by-step progress updates, completion status tracking
 
 ### Design System
 
@@ -77,7 +94,7 @@ Preferred communication style: Simple, everyday language.
 ### Database
 
 **ORM**: Drizzle ORM for PostgreSQL.
-**Schema Structure**: `users`, `emailSubscriptions`, `analyticsEvents`, `generationJobs`, `rateLimits`.
+**Schema Structure**: `users`, `emailSubscriptions`, `analyticsEvents`, `generationJobs`, `rateLimits`, `workflowRuns`.
 **Migration System**: Drizzle Kit.
 
 ### NPM Dependencies
