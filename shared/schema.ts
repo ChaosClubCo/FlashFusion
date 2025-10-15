@@ -30,6 +30,26 @@ export const analyticsEvents = pgTable("analytics_events", {
   consentGiven: boolean("consent_given").notNull().default(false),
 });
 
+// Generation jobs
+export const generationJobs = pgTable("generation_jobs", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  status: text("status").notNull().default("pending"), // pending, processing, completed, failed
+  prompt: text("prompt").notNull(),
+  result: text("result"), // Generated output (JSON string)
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// Rate limit tracking
+export const rateLimits = pgTable("rate_limits", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  requestCount: integer("request_count").notNull().default(0),
+  windowStart: timestamp("window_start").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -47,6 +67,11 @@ export const insertAnalyticsEventSchema = createInsertSchema(analyticsEvents).pi
   consentGiven: true,
 });
 
+export const insertGenerationJobSchema = createInsertSchema(generationJobs).pick({
+  userId: true,
+  prompt: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -54,6 +79,9 @@ export type EmailSubscription = typeof emailSubscriptions.$inferSelect;
 export type InsertEmailSubscription = z.infer<typeof insertEmailSubscriptionSchema>;
 export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
 export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
+export type GenerationJob = typeof generationJobs.$inferSelect;
+export type InsertGenerationJob = z.infer<typeof insertGenerationJobSchema>;
+export type RateLimit = typeof rateLimits.$inferSelect;
 
 // Feature flags type
 export type FeatureFlags = {

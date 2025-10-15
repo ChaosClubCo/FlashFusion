@@ -4,8 +4,11 @@ import { storage } from "./storage";
 import { 
   insertEmailSubscriptionSchema,
   insertAnalyticsEventSchema,
+  insertGenerationJobSchema,
 } from "@shared/schema";
 import { z } from "zod";
+import { rateLimitMiddleware } from "./rateLimit";
+import { createGenerationJob, getGenerationJob, retryJob } from "./generation";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // CORS headers for all routes
@@ -157,6 +160,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching events:', error);
       res.status(500).json({ error: 'Failed to fetch events' });
+    }
+  });
+
+  // Generation endpoint with rate limiting
+  app.post('/api/generate', rateLimitMiddleware, async (req, res) => {
+    try {
+      const validated = insertGenerationJobSchema.parse(req.body);
+      const job = await createGenerationJob(validated);
+      
+      res.json({
+        success: true,
+        jobId: job.id,
+        status: job.status,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ error: 'Invalid request', details: error.errors });
+      } else {
+        console.error('Error creating generation job:', error);
+        res.status(500).json({ error: 'Failed to create generation job' });
+      }
+    }
+  });
+
+  // Get generation job status
+  app.get('/api/generate/:jobId', async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      const job = await getGenerationJob(jobId);
+
+      if (!job) {
+        return res.status(404).json({ error: 'Job not found' });
+      }
+
+      res.json({
+        id: job.id,
+        status: job.status,
+        prompt: job.prompt,
+        result: job.result ? JSON.parse(job.result) : null,
+        errorMessage: job.errorMessage,
+        createdAt: job.createdAt,
+        completedAt: job.completedAt,
+      });
+    } catch (error) {
+      console.error('Error fetching job:', error);
+      res.status(500).json({ error: 'Failed to fetch job' });
+    }
+  });
+
+  // Retry failed job
+  app.post('/api/generate/:jobId/retry', async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      await retryJob(jobId);
+      
+      res.json({ success: true, message: 'Job queued for retry' });
+    } catch (error) {
+      console.error('Error retrying job:', error);
+      res.status(400).json({ error: error instanceof Error ? error.message : 'Failed to retry job' });
     }
   });
 
