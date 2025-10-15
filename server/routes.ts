@@ -10,6 +10,7 @@ import {
 import { z } from "zod";
 import { rateLimitMiddleware } from "./rateLimit";
 import { createGenerationJob, getGenerationJob, retryJob } from "./generation";
+import { openai } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // CORS headers for all routes
@@ -220,6 +221,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error retrying job:', error);
       res.status(400).json({ error: error instanceof Error ? error.message : 'Failed to retry job' });
+    }
+  });
+
+  // AI Code Generation with streaming
+  app.post('/api/generate-code', async (req, res) => {
+    try {
+      const { prompt, type, userId, workflowId } = req.body;
+
+      if (!prompt || !type || !userId) {
+        return res.status(400).json({ error: 'Missing required fields: prompt, type, userId' });
+      }
+
+      // Set headers for streaming
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+
+      // Send initial progress
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Initializing AI generation...', progress: 10 })}\n\n`);
+
+      // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+      const systemPrompt = `You are an expert full-stack developer. Generate production-ready code based on the user's requirements.
+
+Type: ${type}
+Requirements: ${prompt}
+
+Generate a complete project with:
+1. Clean, well-structured code following best practices
+2. All necessary files (HTML, CSS, JavaScript/TypeScript, etc.)
+3. Comments explaining key functionality
+4. Ready to run without modifications
+
+Respond with JSON in this exact format:
+{
+  "files": [
+    {
+      "path": "index.html",
+      "content": "<!DOCTYPE html>..."
+    },
+    {
+      "path": "styles.css",
+      "content": "body { ... }"
+    },
+    {
+      "path": "script.js",
+      "content": "// Main application logic..."
+    }
+  ],
+  "description": "Brief description of what was generated",
+  "instructions": "How to run/use the generated code"
+}`;
+
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Generating code with AI...', progress: 30 })}\n\n`);
+
+      // Call OpenAI API
+      const completion = await openai.chat.completions.create({
+        model: "gpt-5",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        response_format: { type: "json_object" },
+        max_completion_tokens: 8192,
+      });
+
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Processing generated code...', progress: 80 })}\n\n`);
+
+      const generatedContent = completion.choices[0]?.message?.content;
+      
+      if (!generatedContent) {
+        throw new Error('No content generated');
+      }
+
+      const result = JSON.parse(generatedContent);
+
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Saving project...', progress: 95 })}\n\n`);
+
+      // Persist to database
+      const project = await storage.createGeneratedProject({
+        userId,
+        workflowRunId: workflowId || null,
+        title: result.description || 'AI Generated Project',
+        description: prompt,
+        projectType: type,
+        files: JSON.stringify(result.files || []),
+        metadata: JSON.stringify({
+          model: 'gpt-5',
+          instructions: result.instructions,
+          generatedAt: new Date().toISOString(),
+        }),
+      });
+
+      // Send final result with project ID
+      res.write(`data: ${JSON.stringify({ 
+        type: 'complete', 
+        result: {
+          ...result,
+          projectId: project.id,
+        }, 
+        progress: 100 
+      })}\n\n`);
+      res.end();
+
+    } catch (error) {
+      console.error('Error generating code:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate code';
+      try {
+        res.write(`data: ${JSON.stringify({ type: 'error', error: errorMessage })}\n\n`);
+        res.end();
+      } catch (writeError) {
+        console.error('Error writing error response:', writeError);
+      }
     }
   });
 

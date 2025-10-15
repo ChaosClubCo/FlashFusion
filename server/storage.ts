@@ -8,10 +8,13 @@ import {
   type FeatureFlags,
   type WorkflowRun,
   type InsertWorkflowRun,
+  type GeneratedProject,
+  type InsertGeneratedProject,
   users,
   emailSubscriptions,
   analyticsEvents,
   workflowRuns,
+  generatedProjects,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -40,6 +43,12 @@ export interface IStorage {
   getWorkflowRun(id: string): Promise<WorkflowRun | undefined>;
   getWorkflowsByUser(userId: string): Promise<WorkflowRun[]>;
   updateWorkflowRun(id: string, data: Partial<Omit<WorkflowRun, 'id' | 'userId' | 'createdAt'>>): Promise<WorkflowRun | undefined>;
+
+  // Generated project methods
+  createGeneratedProject(data: InsertGeneratedProject): Promise<GeneratedProject>;
+  getGeneratedProject(id: string): Promise<GeneratedProject | undefined>;
+  getGeneratedProjectsByUser(userId: string): Promise<GeneratedProject[]>;
+  deleteGeneratedProject(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -47,6 +56,7 @@ export class MemStorage implements IStorage {
   private emailSubscriptions: Map<string, EmailSubscription>;
   private analyticsEvents: AnalyticsEvent[];
   private workflowRuns: Map<string, WorkflowRun>;
+  private generatedProjects: Map<string, GeneratedProject>;
   private featureFlags: FeatureFlags;
 
   constructor() {
@@ -54,6 +64,7 @@ export class MemStorage implements IStorage {
     this.emailSubscriptions = new Map();
     this.analyticsEvents = [];
     this.workflowRuns = new Map();
+    this.generatedProjects = new Map();
     this.featureFlags = {
       PROMO_LAUNCH50: true,
       PWA_ENABLED: false,
@@ -186,6 +197,36 @@ export class MemStorage implements IStorage {
     };
     this.workflowRuns.set(id, updatedWorkflow);
     return updatedWorkflow;
+  }
+
+  async createGeneratedProject(data: InsertGeneratedProject): Promise<GeneratedProject> {
+    const project: GeneratedProject = {
+      id: randomUUID(),
+      userId: data.userId,
+      workflowRunId: data.workflowRunId || null,
+      title: data.title,
+      description: data.description || null,
+      projectType: data.projectType,
+      files: data.files,
+      metadata: data.metadata || null,
+      createdAt: new Date(),
+    };
+    this.generatedProjects.set(project.id, project);
+    return project;
+  }
+
+  async getGeneratedProject(id: string): Promise<GeneratedProject | undefined> {
+    return this.generatedProjects.get(id);
+  }
+
+  async getGeneratedProjectsByUser(userId: string): Promise<GeneratedProject[]> {
+    return Array.from(this.generatedProjects.values())
+      .filter((project) => project.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async deleteGeneratedProject(id: string): Promise<boolean> {
+    return this.generatedProjects.delete(id);
   }
 }
 
@@ -326,6 +367,41 @@ export class DatabaseStorage implements IStorage {
       .where(eq(workflowRuns.id, id))
       .returning();
     return workflow || undefined;
+  }
+
+  async createGeneratedProject(data: InsertGeneratedProject): Promise<GeneratedProject> {
+    const [project] = await db
+      .insert(generatedProjects)
+      .values({
+        id: randomUUID(),
+        ...data,
+      })
+      .returning();
+    return project;
+  }
+
+  async getGeneratedProject(id: string): Promise<GeneratedProject | undefined> {
+    const [project] = await db
+      .select()
+      .from(generatedProjects)
+      .where(eq(generatedProjects.id, id));
+    return project || undefined;
+  }
+
+  async getGeneratedProjectsByUser(userId: string): Promise<GeneratedProject[]> {
+    const projects = await db
+      .select()
+      .from(generatedProjects)
+      .where(eq(generatedProjects.userId, userId))
+      .orderBy(desc(generatedProjects.createdAt));
+    return projects;
+  }
+
+  async deleteGeneratedProject(id: string): Promise<boolean> {
+    const result = await db
+      .delete(generatedProjects)
+      .where(eq(generatedProjects.id, id));
+    return true;
   }
 }
 

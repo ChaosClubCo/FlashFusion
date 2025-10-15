@@ -85,6 +85,19 @@ export const workflowResults = pgTable("workflow_results", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Generated projects - stores AI-generated code and files
+export const generatedProjects = pgTable("generated_projects", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  workflowRunId: varchar("workflow_run_id").references(() => workflowRuns.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  projectType: text("project_type").notNull(), // webapp, mobileapp, api, component, etc.
+  files: text("files").notNull(), // JSON array of {path, content}
+  metadata: text("metadata"), // JSON object with additional info
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -129,6 +142,16 @@ export const insertWorkflowResultSchema = createInsertSchema(workflowResults).pi
   metrics: true,
 });
 
+export const insertGeneratedProjectSchema = createInsertSchema(generatedProjects).pick({
+  userId: true,
+  workflowRunId: true,
+  title: true,
+  description: true,
+  projectType: true,
+  files: true,
+  metadata: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -145,6 +168,8 @@ export type WorkflowStep = typeof workflowSteps.$inferSelect;
 export type InsertWorkflowStep = z.infer<typeof insertWorkflowStepSchema>;
 export type WorkflowResult = typeof workflowResults.$inferSelect;
 export type InsertWorkflowResult = z.infer<typeof insertWorkflowResultSchema>;
+export type GeneratedProject = typeof generatedProjects.$inferSelect;
+export type InsertGeneratedProject = z.infer<typeof insertGeneratedProjectSchema>;
 
 // Feature flags type
 export type FeatureFlags = {

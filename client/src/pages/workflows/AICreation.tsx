@@ -81,28 +81,98 @@ export default function AICreation() {
     });
   }, []);
 
-  useEffect(() => {
-    // Auto-start generation simulation when we reach step 3
-    if (currentStep === 3) {
-      setProcessing(true);
-      setProgress(0);
-      
-      const interval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setProcessing(false);
-            nextStep();
-            return 100;
-          }
-          return prev + 10;
-        });
-      }, 200);
+  const [generationStatus, setGenerationStatus] = useState('');
+  const [generatedFiles, setGeneratedFiles] = useState<any[]>([]);
 
-      // Cleanup interval on unmount or step change
-      return () => clearInterval(interval);
+  useEffect(() => {
+    // Auto-start real AI generation when we reach step 3
+    if (currentStep === 3) {
+      handleGenerateCode();
     }
   }, [currentStep]);
+
+  const handleGenerateCode = async () => {
+    setProcessing(true);
+    setProgress(0);
+    setGenerationStatus('Initializing AI generation...');
+    setGeneratedFiles([]);
+
+    try {
+      const response = await fetch('/api/generate-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: stepData[2]?.description || 'Create a simple web application',
+          type: stepData[1]?.creationType || 'full-stack-app',
+          userId: 'demo-user-1',
+          workflowId: currentWorkflowId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) {
+        throw new Error('No response stream available');
+      }
+
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+
+        // Append new chunk to buffer
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Split by double newline (SSE event separator)
+        const events = buffer.split('\n\n');
+        
+        // Keep the last partial event in the buffer
+        buffer = events.pop() || '';
+
+        // Process complete events
+        for (const event of events) {
+          if (event.trim().startsWith('data: ')) {
+            try {
+              const data = JSON.parse(event.trim().slice(6));
+              
+              if (data.type === 'progress') {
+                setProgress(data.progress);
+                setGenerationStatus(data.message);
+              } else if (data.type === 'complete') {
+                setProgress(100);
+                setGenerationStatus('Generation complete!');
+                setGeneratedFiles(data.result.files || []);
+                setProcessing(false);
+                
+                // Auto-advance to completion screen after 1 second
+                setTimeout(() => {
+                  nextStep();
+                }, 1000);
+              } else if (data.type === 'error') {
+                setGenerationStatus(`Error: ${data.error}`);
+                setProcessing(false);
+              }
+            } catch (parseError) {
+              console.warn('Failed to parse SSE event:', event, parseError);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Generation error:', error);
+      setGenerationStatus(`Failed to generate: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setProcessing(false);
+    }
+  };
 
   const handleNext = async () => {
     if (currentStep === 4) {
@@ -268,11 +338,12 @@ export default function AICreation() {
             </div>
 
             <Card>
-              <CardContent className="pt-6">
-                <Progress value={progress} className="mb-4" />
-                <p className="text-sm text-center text-muted-foreground">
-                  {progress}% Complete
-                </p>
+              <CardContent className="pt-6 space-y-4">
+                <Progress value={progress} className="mb-2" />
+                <div className="text-center space-y-1">
+                  <p className="text-sm font-medium">{progress}% Complete</p>
+                  <p className="text-xs text-muted-foreground">{generationStatus}</p>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -294,37 +365,34 @@ export default function AICreation() {
             <Card>
               <CardHeader>
                 <CardTitle>Generated Files</CardTitle>
+                <CardDescription>{generatedFiles.length} files created</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Code2 className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-mono text-sm">frontend/</span>
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {generatedFiles.length > 0 ? (
+                    generatedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <Code2 className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span className="font-mono text-sm">{file.path}</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {file.content ? `${(file.content.length / 1024).toFixed(1)} KB` : '-'}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No files generated yet</p>
                     </div>
-                    <span className="text-sm text-muted-foreground">12 files</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Code2 className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-mono text-sm">backend/</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">8 files</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Code2 className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-mono text-sm">database/</span>
-                    </div>
-                    <span className="text-sm text-muted-foreground">3 files</span>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
             <div className="flex gap-3">
-              <Button variant="outline" className="flex-1">Preview</Button>
-              <Button className="flex-1">Download Files</Button>
+              <Button variant="outline" className="flex-1" data-testid="button-preview-files">Preview</Button>
+              <Button className="flex-1" data-testid="button-download-files">Download Files</Button>
             </div>
           </div>
         )}
