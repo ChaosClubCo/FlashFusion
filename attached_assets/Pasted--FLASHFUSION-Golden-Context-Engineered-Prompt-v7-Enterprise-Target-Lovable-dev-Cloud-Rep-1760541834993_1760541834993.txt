@@ -1,0 +1,277 @@
+⚡ FLASHFUSION — Golden Context-Engineered Prompt (v7, Enterprise++)
+
+Target: Lovable.dev Cloud / Replit.com
+Mission: Generate a production-ready, cinematic, WCAG-AA, CSP-safe, SEO-rich React 18 app that replicates FlashFusion. The output must run immediately with npm run dev and meet the acceptance criteria below.
+
+1) Immutable System Rules
+
+Framework: React 18 + Vite + TypeScript
+
+Styling: Tailwind CSS 3 (build-time extraction only; no inline styles)
+
+Motion: Framer Motion 11 (must respect prefers-reduced-motion)
+
+Routing: React Router v6 with lazy routes & route chunk budgets
+
+SEO: react-helmet-async + JSON-LD (Organization, Product, FAQPage, HowTo, AggregateRating)
+
+A11y: WCAG 2.1 AA (contrast ≥ 4.5:1, visible focus, alt text, skip link, focus traps for modals)
+
+Security: Strict CSP patterns (no unsafe-inline), DOMPurify sanitization, SafeIframe allowlist + sandbox, wss noted in CSP guidance
+
+Performance budgets: Initial JS ≤ 120KB gz, LCP ≤ 1.8s, CLS ≤ 0.1, TTI ≤ 1.8s (fast 4G)
+
+Responsive: 375 / 768 / 1440
+
+Accessibility verification: add Axe/keyboard checklist to README
+
+Privacy: first-party analytics only (consent-gated), AI output disclosure
+
+Optional flags: PWA_ENABLED, PROMO_LAUNCH50, I18N_ENABLED
+
+2) File Structure to Generate
+src/
+  components/
+    core/ApplicationShell.tsx
+    Background.tsx
+    Hero.tsx
+    Metrics.tsx
+    Features.tsx
+    BuildProcess.tsx
+    LimitReachedModal.tsx
+    UsageWarning.tsx
+    SafeIframe.tsx
+    ConsentBanner.tsx
+    Skeleton.tsx
+    ErrorBoundary.tsx
+    CommandPaletteHint.tsx
+  pages/
+    Landing.tsx
+    Pricing.tsx
+    QA.tsx
+    Privacy.tsx
+    Terms.tsx
+    Status.tsx
+    NotFound.tsx
+  utils/
+    sanitize.ts
+    events.ts
+    featureFlags.ts
+    i18n.ts (stub if I18N_ENABLED)
+  styles/globals.css
+  main.tsx
+  App.tsx
+public/
+  og/default.png
+  grain.png
+  manifest.webmanifest (if PWA_ENABLED)
+index.html
+vite.config.ts
+tailwind.config.cjs
+tsconfig.json
+package.json
+README.md
+
+
+Rules:
+
+No style={{…}} props.
+
+No dangerouslySetInnerHTML without sanitize().
+
+All images WebP/PNG with srcset, sizes, loading="lazy", decoding="async".
+
+Fonts via Google Fonts stylesheet + Font Loading API fallback (no preload CSP tripwire).
+
+3) Cinematic Visual System
+
+Persistent Background (Background.tsx)
+
+Gradient mesh (orange → cyan → magenta), grain overlay (opacity 5%)
+
+Parallax: animate background Y 0 → -64px loop 30s linear
+
+If prefers-reduced-motion → disable animation (static gradient)
+
+Foreground Layer
+
+Glass: rgba(14,14,16,0.85) + backdrop-blur(6px)
+
+Vertical stack: gap 64, pad 160, z-index 10
+
+iOS hardening
+
+Use 100dvh with vh fallback, inputs ≥16px, momentum scroll, keyboard scroll-into-view hook.
+
+4) Content Sections (with states)
+
+Hero
+
+H1 “Build Apps 10× Faster with AI”
+
+Sub: “Transform ideas into production-ready applications in minutes.”
+
+CTAs: Primary (orange) “Start Building Free”; Secondary “Watch 2-Minute Demo”
+
+Email field + taglines (Free tier • 2-min setup • No card)
+
+States: Skeleton while fonts load; error boundary message fallback.
+
+Metrics
+
+6 stats (Visitors, Demos, Developers, Apps, Uptime, Rating)
+
+Stagger 50ms; aria-label for each number; live region polite.
+
+Features Grid
+
+4 cards: Full-Stack Builder / 60+ AI Tools / Multi-Agent / One-Click Deploy
+
+2-col → 1-col responsive
+
+Empty state (if content list empty) shows CTA to explore tools.
+
+Build Process
+
+1..5 cards (Describe → Analyze → Generate → Test → Deploy)
+
+Pricing + Monetization
+
+3 tiers (Free / Pro / Enterprise), Pro shows “50% OFF 4 months” if PROMO_LAUNCH50
+
+UsageWarning at 80% soft-limit; LimitReachedModal with keyboard focus trap
+
+Referral stub CTA (“Invite 2 friends → +10 generations”)
+
+QA Panel
+
+Reduced-motion toggle; show target counters (LCP/CLS/SEO/A11y)
+
+Trust & Legal
+
+Pages: Privacy, Terms, Status (simple content placeholders)
+
+ConsentBanner (cookie/analytics consent + AI output disclosure)
+
+NotFound
+
+404 page with link back to Home
+
+5) SEO & Schema (every page via Helmet)
+
+<title>FlashFusion – Build Apps 10× Faster with AI</title>
+
+<meta name="description" content="AI-powered development platform creating production-ready apps in minutes.">
+
+<link rel="canonical" href="https://flashfusion.dev">
+
+JSON-LD blocks for Organization, Product, FAQPage, HowTo, AggregateRating (sensible defaults)
+
+OG/Twitter image = public/og/default.png (1200×630)
+
+Exactly one <h1> per page.
+
+6) Accessibility Enforcement
+
+Skip link to #main (visible on focus)
+
+Focus rings 2px brand/orange; tab order header→main→footer
+
+Modals use focus trap and aria-modal="true"
+
+Motion reduces for prefers-reduced-motion (Framer + CSS)
+
+Axe checklist in README; VoiceOver reads Hero in correct order.
+
+7) Security & CSP-Safe Patterns
+
+Sanitize: utils/sanitize.ts uses DOMPurify for HTML and input
+
+Safe iframes: allowlist only
+
+https://www.youtube-nocookie.com
+https://player.vimeo.com
+https://checkout.stripe.com
+
+
+sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+
+No inline styles/scripts anywhere; Tailwind classes only
+
+README includes CSP header guidance with wss note for realtime (if later added)
+
+Feature flags stub (featureFlags.ts) so risky features can be disabled without code edits.
+
+8) Performance & Cost Controls
+
+Route-based code splitting; prefetch most-used routes on idle
+
+Image pipeline: WebP thumbs, srcset + sizes, lazy + async decode
+
+Font Loading API + display:swap
+
+Chunk budgets: keep initial route under 120KB gz
+
+Command palette hint renders only after idle (to not affect TTI)
+
+9) Privacy-Respecting Analytics
+
+First-party event logger (utils/events.ts) with consent gate; no 3rd-party by default
+
+Track: landing_view, cta_click, generation_started/completed, pricing_view, upgrade_click
+
+Store only minimal fields (timestamp, route, CTA id); clearly documented.
+
+10) i18n Readiness (optional)
+
+If I18N_ENABLED, generate:
+
+utils/i18n.ts with simple catalog & t() helper
+
+en.json seed; components call t('key') for user-visible strings
+
+Default locale: en.
+
+11) Testing, QA & Observability (lightweight)
+
+components/ErrorBoundary.tsx wraps App
+
+components/Skeleton.tsx used in Hero/Features loads
+
+README: Playwright smoke steps (open /, navigate /pricing, open modal, tab through)
+
+README: Lighthouse targets & how to run checks
+
+Min runtime perf hook to log render durations in dev (console only)
+
+12) Deployment & Flags
+
+Run:
+
+npm i
+npm run dev
+
+
+Flags (via env or simple constant in featureFlags.ts):
+
+PROMO_LAUNCH50 = true | false
+
+PWA_ENABLED = false (if true → emit manifest.webmanifest + SW stub)
+
+I18N_ENABLED = false
+
+✅ Acceptance Criteria (must pass)
+
+Perf: initial JS ≤ 120KB gz; LCP ≤ 1.8s; CLS ≤ 0.1; Perf ≥ 90
+
+SEO: SEO ≥ 90; JSON-LD validates; canonical present
+
+A11y: Axe passes critical checks; tab order correct; visible focus; reduced-motion honored
+
+Security: zero inline styles/scripts; sanitization applied; SafeIframe uses allowlist + sandbox
+
+UX states: skeletons render; error boundaries show helpful copy; NotFound works
+
+Legal & trust: Privacy, Terms, Status, Consent banner present
+
+Monetization: soft-limit banner at 80%, modal keyboard-operable, pricing focus order correct

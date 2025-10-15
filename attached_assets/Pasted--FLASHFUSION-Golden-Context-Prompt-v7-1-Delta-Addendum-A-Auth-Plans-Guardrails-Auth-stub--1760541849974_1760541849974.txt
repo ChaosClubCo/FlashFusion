@@ -1,0 +1,78 @@
+⚡ FLASHFUSION — Golden Context Prompt (v7.1 Delta Addendum)
+A) Auth, Plans & Guardrails
+
+Auth stub (optional): generate a useAuth() hook with isAuthenticated, role, plan, and a ProtectedRoute wrapper.
+
+Plan gating: add withPlanGuard(requiredPlan) HOC and hide/disable locked CTAs with an “Upgrade” path.
+
+Rate limiting UI: in GenerateButton, surface a small “n/10 requests” chip + cooldown text.
+
+B) Telemetry, Privacy & Governance
+
+Consent categories: functional | analytics | marketing; only log events when analytics consent=true.
+
+Event schema: standardize in utils/events.ts with { name, ts, route, props }; queue unsent events and flush on idle.
+
+AI disclosure: add a small “⚠︎ AI-generated content may require review” line near outputs (meets disclosure requirements).
+
+UTM hygiene: capture UTM params once (consent-gated) and store in memory only.
+
+C) Reliability & Ops
+
+Outage banner: StatusPill reads a boolean flag and shows “Degraded / Maintenance” in header.
+
+Synthetic check link: README includes a cURL/Lighthouse snippet to test /, /pricing, and modal focus flow.
+
+Feature flags: expand featureFlags.ts with UPGRADE_MODAL_V2, REFERRAL_ENABLED, AGENT_TEASERS_ENABLED.
+
+D) Security Hardening (low overhead)
+
+Headers templates (docs only):
+
+Vercel: strict CSP (no unsafe-inline), X-Frame-Options=DENY, Referrer-Policy=strict-origin-when-cross-origin, Permissions-Policy (camera/mic/geo=()).
+
+Replit proxy note: remind that proxies may add/strip headers; keep CSP in app & CDN.
+
+CORS & iframe note: document allowed hosts and why (Stripe checkout, nocookie YouTube).
+
+No secret leakage: README: “Never commit keys; use env vars only.”
+
+E) Accessibility & UX Polish
+
+Reduced-motion badge: show a subtle “Motion reduced” hint when the toggle is active.
+
+Keyboard shortcuts: Ctrl/Cmd+K hint renders post-first-paint; announce with aria-live="polite".
+
+Color-blind check: enforce non-reliance on color alone in charts/badges (add icons/labels).
+
+Print styles: add a minimal print CSS for Pricing & Docs pages.
+
+F) Internationalization Readiness
+
+RTL support stub: if I18N_ENABLED, add dir="auto" at <html> and a style rule to flip paddings where needed.
+
+Locale switcher placeholder: header menu item that toggles en ↔ es (no translations required now).
+
+G) Testing & Release
+
+Playwright smokes (docs): steps for: focus trap in LimitReachedModal, tab order in Hero, skip-link jump, and 404 redirect.
+
+Release checklist: in README (perf, a11y, legal pages, consent, CSP check).
+
+Changelog: create CHANGELOG.md seed and document semantic version bump.
+
+H) Deployment Config Hints (docs-only)
+
+Cache policy: immutable for /assets/*, stale-while-revalidate=300 for HTML.
+
+Image pipeline: prefer WebP; include sizes for hero & cards.
+
+PWA flag: if PWA_ENABLED, add a no-index rule to prevent accidental SEO duplication until verified.
+
+Minimal prompt lines to paste under v7
+
+Add files: src/components/StatusPill.tsx, src/components/auth/ProtectedRoute.tsx, src/utils/planGuard.ts, CHANGELOG.md.
+
+Expand flags: UPGRADE_MODAL_V2=false, REFERRAL_ENABLED=false, AGENT_TEASERS_ENABLED=false.
+
+Docs: append “Headers & CSP” and “Release Checklist” sections to README with the header set above.
