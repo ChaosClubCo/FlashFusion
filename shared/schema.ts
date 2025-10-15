@@ -50,6 +50,41 @@ export const rateLimits = pgTable("rate_limits", {
   windowStart: timestamp("window_start").notNull().defaultNow(),
 });
 
+// Workflow runs - tracks each workflow execution
+export const workflowRuns = pgTable("workflow_runs", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  workflowType: text("workflow_type").notNull(), // ai-creation, publishing, commerce, analytics, security, quality
+  status: text("status").notNull().default("in_progress"), // in_progress, completed, failed
+  currentStep: integer("current_step").notNull().default(1),
+  totalSteps: integer("total_steps").notNull(),
+  configuration: text("configuration"), // JSON string of workflow config
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+// Workflow steps - tracks individual steps within a workflow
+export const workflowSteps = pgTable("workflow_steps", {
+  id: varchar("id").primaryKey(),
+  workflowRunId: varchar("workflow_run_id").notNull().references(() => workflowRuns.id),
+  stepNumber: integer("step_number").notNull(),
+  stepName: text("step_name").notNull(),
+  status: text("status").notNull().default("pending"), // pending, active, completed, skipped
+  data: text("data"), // JSON string of step-specific data
+  completedAt: timestamp("completed_at"),
+});
+
+// Workflow results - stores final results and outputs
+export const workflowResults = pgTable("workflow_results", {
+  id: varchar("id").primaryKey(),
+  workflowRunId: varchar("workflow_run_id").notNull().references(() => workflowRuns.id),
+  resultType: text("result_type").notNull(), // code, deployment, analytics, security_report, quality_report
+  resultData: text("result_data").notNull(), // JSON string of results
+  files: text("files"), // JSON array of generated files
+  metrics: text("metrics"), // JSON object of performance/quality metrics
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -72,6 +107,28 @@ export const insertGenerationJobSchema = createInsertSchema(generationJobs).pick
   prompt: true,
 });
 
+export const insertWorkflowRunSchema = createInsertSchema(workflowRuns).pick({
+  userId: true,
+  workflowType: true,
+  totalSteps: true,
+  configuration: true,
+});
+
+export const insertWorkflowStepSchema = createInsertSchema(workflowSteps).pick({
+  workflowRunId: true,
+  stepNumber: true,
+  stepName: true,
+  data: true,
+});
+
+export const insertWorkflowResultSchema = createInsertSchema(workflowResults).pick({
+  workflowRunId: true,
+  resultType: true,
+  resultData: true,
+  files: true,
+  metrics: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -82,6 +139,12 @@ export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
 export type GenerationJob = typeof generationJobs.$inferSelect;
 export type InsertGenerationJob = z.infer<typeof insertGenerationJobSchema>;
 export type RateLimit = typeof rateLimits.$inferSelect;
+export type WorkflowRun = typeof workflowRuns.$inferSelect;
+export type InsertWorkflowRun = z.infer<typeof insertWorkflowRunSchema>;
+export type WorkflowStep = typeof workflowSteps.$inferSelect;
+export type InsertWorkflowStep = z.infer<typeof insertWorkflowStepSchema>;
+export type WorkflowResult = typeof workflowResults.$inferSelect;
+export type InsertWorkflowResult = z.infer<typeof insertWorkflowResultSchema>;
 
 // Feature flags type
 export type FeatureFlags = {

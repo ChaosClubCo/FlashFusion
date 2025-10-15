@@ -20,6 +20,13 @@ const Privacy = lazy(() => import("@/pages/Privacy"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const Status = lazy(() => import("@/pages/Status"));
 const Offline = lazy(() => import("@/pages/Offline"));
+const Workflows = lazy(() => import("@/pages/Workflows"));
+const AICreation = lazy(() => import("@/pages/workflows/AICreation"));
+const Publishing = lazy(() => import("@/pages/workflows/Publishing"));
+const Commerce = lazy(() => import("@/pages/workflows/Commerce"));
+const Analytics = lazy(() => import("@/pages/workflows/Analytics"));
+const Security = lazy(() => import("@/pages/workflows/Security"));
+const Quality = lazy(() => import("@/pages/workflows/Quality"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function PageLoader() {
@@ -45,6 +52,13 @@ function Router() {
         <Route path="/terms" component={Terms} />
         <Route path="/status" component={Status} />
         <Route path="/offline" component={Offline} />
+        <Route path="/workflows" component={Workflows} />
+        <Route path="/workflows/ai-creation" component={AICreation} />
+        <Route path="/workflows/publishing" component={Publishing} />
+        <Route path="/workflows/commerce" component={Commerce} />
+        <Route path="/workflows/analytics" component={Analytics} />
+        <Route path="/workflows/security" component={Security} />
+        <Route path="/workflows/quality" component={Quality} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>

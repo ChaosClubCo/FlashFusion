@@ -5,6 +5,7 @@ import {
   insertEmailSubscriptionSchema,
   insertAnalyticsEventSchema,
   insertGenerationJobSchema,
+  insertWorkflowRunSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import { rateLimitMiddleware } from "./rateLimit";
@@ -219,6 +220,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error retrying job:', error);
       res.status(400).json({ error: error instanceof Error ? error.message : 'Failed to retry job' });
+    }
+  });
+
+  // Workflow endpoints
+  app.post('/api/workflows', async (req, res) => {
+    try {
+      const validated = insertWorkflowRunSchema.parse(req.body);
+      const workflow = await storage.createWorkflowRun(validated);
+      res.json(workflow);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ error: 'Invalid workflow data', details: error.errors });
+      } else {
+        console.error('Error creating workflow:', error);
+        res.status(500).json({ error: 'Failed to create workflow' });
+      }
+    }
+  });
+
+  app.get('/api/workflows/:id', async (req, res) => {
+    try {
+      const workflow = await storage.getWorkflowRun(req.params.id);
+      if (!workflow) {
+        return res.status(404).json({ error: 'Workflow not found' });
+      }
+      res.json(workflow);
+    } catch (error) {
+      console.error('Error fetching workflow:', error);
+      res.status(500).json({ error: 'Failed to fetch workflow' });
+    }
+  });
+
+  app.get('/api/workflows/user/:userId', async (req, res) => {
+    try {
+      const workflows = await storage.getWorkflowsByUser(req.params.userId);
+      res.json(workflows);
+    } catch (error) {
+      console.error('Error fetching workflows:', error);
+      res.status(500).json({ error: 'Failed to fetch workflows' });
+    }
+  });
+
+  app.patch('/api/workflows/:id', async (req, res) => {
+    try {
+      const { currentStep, status, configuration } = req.body;
+      const workflow = await storage.updateWorkflowRun(req.params.id, {
+        currentStep,
+        status,
+        configuration: configuration ? JSON.stringify(configuration) : undefined,
+      });
+      if (!workflow) {
+        res.status(404).json({ error: 'Workflow not found' });
+        return;
+      }
+      res.json(workflow);
+    } catch (error) {
+      console.error('Error updating workflow:', error);
+      res.status(500).json({ error: 'Failed to update workflow' });
     }
   });
 

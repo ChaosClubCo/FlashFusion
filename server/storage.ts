@@ -6,9 +6,12 @@ import {
   type AnalyticsEvent,
   type InsertAnalyticsEvent,
   type FeatureFlags,
+  type WorkflowRun,
+  type InsertWorkflowRun,
   users,
   emailSubscriptions,
   analyticsEvents,
+  workflowRuns,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -31,18 +34,26 @@ export interface IStorage {
 
   // Feature flags
   getFeatureFlags(): Promise<FeatureFlags>;
+
+  // Workflow methods
+  createWorkflowRun(data: InsertWorkflowRun): Promise<WorkflowRun>;
+  getWorkflowRun(id: string): Promise<WorkflowRun | undefined>;
+  getWorkflowsByUser(userId: string): Promise<WorkflowRun[]>;
+  updateWorkflowRun(id: string, data: Partial<Omit<WorkflowRun, 'id' | 'userId' | 'createdAt'>>): Promise<WorkflowRun | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private emailSubscriptions: Map<string, EmailSubscription>;
   private analyticsEvents: AnalyticsEvent[];
+  private workflowRuns: Map<string, WorkflowRun>;
   private featureFlags: FeatureFlags;
 
   constructor() {
     this.users = new Map();
     this.emailSubscriptions = new Map();
     this.analyticsEvents = [];
+    this.workflowRuns = new Map();
     this.featureFlags = {
       PROMO_LAUNCH50: true,
       PWA_ENABLED: false,
@@ -136,6 +147,45 @@ export class MemStorage implements IStorage {
 
   async getFeatureFlags(): Promise<FeatureFlags> {
     return this.featureFlags;
+  }
+
+  async createWorkflowRun(data: InsertWorkflowRun): Promise<WorkflowRun> {
+    const workflow: WorkflowRun = {
+      id: randomUUID(),
+      userId: data.userId,
+      workflowType: data.workflowType,
+      status: 'in_progress',
+      currentStep: 1,
+      totalSteps: data.totalSteps,
+      configuration: data.configuration || null,
+      createdAt: new Date(),
+      completedAt: null,
+    };
+    this.workflowRuns.set(workflow.id, workflow);
+    return workflow;
+  }
+
+  async getWorkflowRun(id: string): Promise<WorkflowRun | undefined> {
+    return this.workflowRuns.get(id);
+  }
+
+  async getWorkflowsByUser(userId: string): Promise<WorkflowRun[]> {
+    return Array.from(this.workflowRuns.values()).filter(
+      (workflow) => workflow.userId === userId
+    );
+  }
+
+  async updateWorkflowRun(id: string, data: Partial<Omit<WorkflowRun, 'id' | 'userId' | 'createdAt'>>): Promise<WorkflowRun | undefined> {
+    const workflow = this.workflowRuns.get(id);
+    if (!workflow) return undefined;
+
+    const updatedWorkflow = { 
+      ...workflow, 
+      ...data,
+      completedAt: data.status === 'completed' ? new Date() : workflow.completedAt,
+    };
+    this.workflowRuns.set(id, updatedWorkflow);
+    return updatedWorkflow;
   }
 }
 
@@ -233,6 +283,49 @@ export class DatabaseStorage implements IStorage {
 
   async getFeatureFlags(): Promise<FeatureFlags> {
     return this.featureFlags;
+  }
+
+  async createWorkflowRun(data: InsertWorkflowRun): Promise<WorkflowRun> {
+    const [workflow] = await db
+      .insert(workflowRuns)
+      .values({
+        id: randomUUID(),
+        ...data,
+      })
+      .returning();
+    return workflow;
+  }
+
+  async getWorkflowRun(id: string): Promise<WorkflowRun | undefined> {
+    const [workflow] = await db
+      .select()
+      .from(workflowRuns)
+      .where(eq(workflowRuns.id, id));
+    return workflow || undefined;
+  }
+
+  async getWorkflowsByUser(userId: string): Promise<WorkflowRun[]> {
+    const workflows = await db
+      .select()
+      .from(workflowRuns)
+      .where(eq(workflowRuns.userId, userId))
+      .orderBy(desc(workflowRuns.createdAt));
+    return workflows;
+  }
+
+  async updateWorkflowRun(id: string, data: Partial<Omit<WorkflowRun, 'id' | 'userId' | 'createdAt'>>): Promise<WorkflowRun | undefined> {
+    const updateData: any = {};
+    if (data.currentStep !== undefined) updateData.currentStep = data.currentStep;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.configuration !== undefined) updateData.configuration = data.configuration;
+    if (data.status === 'completed') updateData.completedAt = new Date();
+
+    const [workflow] = await db
+      .update(workflowRuns)
+      .set(updateData)
+      .where(eq(workflowRuns.id, id))
+      .returning();
+    return workflow || undefined;
   }
 }
 
