@@ -21,6 +21,7 @@ const Terms = lazy(() => import("@/pages/Terms"));
 const Status = lazy(() => import("@/pages/Status"));
 const Offline = lazy(() => import("@/pages/Offline"));
 const Workflows = lazy(() => import("@/pages/Workflows"));
+const ImageGeneration = lazy(() => import("@/pages/ImageGeneration"));
 const AICreation = lazy(() => import("@/pages/workflows/AICreation"));
 const Publishing = lazy(() => import("@/pages/workflows/Publishing"));
 const Commerce = lazy(() => import("@/pages/workflows/Commerce"));
@@ -53,6 +54,7 @@ function Router() {
         <Route path="/status" component={Status} />
         <Route path="/offline" component={Offline} />
         <Route path="/workflows" component={Workflows} />
+        <Route path="/image-generation" component={ImageGeneration} />
         <Route path="/workflows/ai-creation" component={AICreation} />
         <Route path="/workflows/publishing" component={Publishing} />
         <Route path="/workflows/commerce" component={Commerce} />

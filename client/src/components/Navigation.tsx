@@ -10,6 +10,7 @@ export function Navigation() {
   const navItems = [
     { path: '/', label: t('nav.home') },
     { path: '/workflows', label: 'Workflows' },
+    { path: '/image-generation', label: 'Image Generation' },
     { path: '/pricing', label: t('nav.pricing') },
     { path: '/qa', label: t('nav.qa') },
   ];
