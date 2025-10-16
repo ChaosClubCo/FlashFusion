@@ -7,9 +7,15 @@ Follow these instructions when using this blueprint:
 3. Request output in JSON format in the prompt
 */
 
-// This is using Replit's AI Integrations service, which provides OpenAI-compatible API access without requiring your own OpenAI API key.
+// This is using Replit's AI Integrations service for code generation (text-only)
 // Charges are billed to your Replit credits.
 export const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+});
+
+// This uses direct OpenAI API for image generation (DALL-E)
+// Requires OPENAI_API_KEY and charges to OpenAI account
+export const openaiDirect = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });

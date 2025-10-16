@@ -11,7 +11,7 @@ import {
 import { z } from "zod";
 import { rateLimitMiddleware } from "./rateLimit";
 import { createGenerationJob, getGenerationJob, retryJob } from "./generation";
-import { openai } from "./openai";
+import { openai, openaiDirect } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // CORS headers for all routes
@@ -442,8 +442,8 @@ Respond with JSON in this exact format:
         ? JSON.parse(validated.settings) 
         : validated.settings;
 
-      // Call OpenAI DALL-E API
-      const imageResponse = await openai.images.generate({
+      // Call OpenAI DALL-E API (using direct OpenAI client, not Replit AI Integrations)
+      const imageResponse = await openaiDirect.images.generate({
         model: validated.model || "dall-e-3",
         prompt: `${validated.prompt}${validated.style ? ` in ${validated.style} style` : ''}`,
         n: 1,
