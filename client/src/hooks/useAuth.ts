@@ -1,59 +1,16 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+// Reference: blueprint:javascript_log_in_with_replit
+import { useQuery } from "@tanstack/react-query";
+import type { User } from "@shared/schema";
 
-type Plan = 'free' | 'pro' | 'enterprise';
-type Role = 'user' | 'admin';
+export function useAuth() {
+  const { data: user, isLoading } = useQuery<User>({
+    queryKey: ["/api/auth/user"],
+    retry: false,
+  });
 
-interface AuthState {
-  isAuthenticated: boolean;
-  user: {
-    id: string;
-    username: string;
-    plan: Plan;
-    role: Role;
-    currentUsage: number;
-    usageLimit: number;
-  } | null;
-  login: (username: string, plan?: Plan) => void;
-  logout: () => void;
-  incrementUsage: () => void;
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
+  };
 }
-
-export const useAuth = create<AuthState>()(
-  persist(
-    (set) => ({
-      isAuthenticated: false,
-      user: null,
-      login: (username: string, plan: Plan = 'free') => {
-        set({
-          isAuthenticated: true,
-          user: {
-            id: 'demo-user-1',
-            username,
-            plan,
-            role: 'user',
-            currentUsage: 0,
-            usageLimit: plan === 'free' ? 10 : plan === 'pro' ? 100 : 1000,
-          },
-        });
-      },
-      logout: () => {
-        set({ isAuthenticated: false, user: null });
-      },
-      incrementUsage: () => {
-        set((state) => {
-          if (!state.user) return state;
-          return {
-            user: {
-              ...state.user,
-              currentUsage: state.user.currentUsage + 1,
-            },
-          };
-        });
-      },
-    }),
-    {
-      name: 'auth-storage',
-    }
-  )
-);

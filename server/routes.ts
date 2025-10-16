@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { 
   insertEmailSubscriptionSchema,
   insertAnalyticsEventSchema,
@@ -14,12 +15,63 @@ import { createGenerationJob, getGenerationJob, retryJob } from "./generation";
 import { openai, openaiDirect } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // CORS headers for all routes
+  // Setup Replit Auth - Reference: blueprint:javascript_log_in_with_replit
+  await setupAuth(app);
+
+  // CORS headers for all routes - configured for authentication
   app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    const origin = req.headers.origin;
+    const allowedOrigins = process.env.REPLIT_DOMAINS?.split(',').map(d => `https://${d}`) || [];
+    
+    if (origin && allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Access-Control-Allow-Credentials', 'true');
+    }
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
+  });
+
+  // Auth endpoint - Reference: blueprint:javascript_log_in_with_replit
+  // Development bypass: auto-authenticate with demo user if no session exists
+  app.get('/api/auth/user', async (req: any, res, next) => {
+    // In development, bypass auth and use demo user if not authenticated
+    if (process.env.NODE_ENV === 'development') {
+      if (!req.isAuthenticated()) {
+        try {
+          const demoUser = await storage.getUser('demo-user-1');
+          if (demoUser) {
+            return res.json(demoUser);
+          }
+          return res.status(404).json({ message: "Demo user not found" });
+        } catch (error) {
+          console.error("Error fetching demo user:", error);
+          return res.status(500).json({ message: "Failed to fetch demo user" });
+        }
+      } else {
+        // Development with real session (when testing Replit Auth locally)
+        try {
+          const userId = req.user.claims.sub;
+          const user = await storage.getUser(userId);
+          return res.json(user);
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          return res.status(500).json({ message: "Failed to fetch user" });
+        }
+      }
+    }
+    
+    // Production: require authentication
+    return isAuthenticated(req, res, async () => {
+      try {
+        const userId = req.user.claims.sub;
+        const user = await storage.getUser(userId);
+        res.json(user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        res.status(500).json({ message: "Failed to fetch user" });
+      }
+    });
   });
 
   // Feature flags endpoint

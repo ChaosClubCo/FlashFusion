@@ -1,16 +1,39 @@
-import { pgTable, text, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, boolean, index, jsonb } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users table (existing)
+// Session storage table - Required for Replit Auth
+// Reference: blueprint:javascript_log_in_with_replit
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// Users table - Merged Replit Auth + FlashFusion fields
+// Reference: blueprint:javascript_log_in_with_replit
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  // Replit Auth fields (required)
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  
+  // FlashFusion application fields
   plan: text("plan").notNull().default("free"), // free, pro, enterprise
   role: text("role").notNull().default("user"),
   currentUsage: integer("current_usage").notNull().default(0),
   usageLimit: integer("usage_limit").notNull().default(10),
+  
+  // Timestamps
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 // Email subscriptions
@@ -114,9 +137,21 @@ export const generatedImages = pgTable("generated_images", {
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  profileImageUrl: true,
 });
+
+// Upsert schema for OAuth users - id is explicitly required
+// Reference: blueprint:javascript_log_in_with_replit
+export const upsertUserSchema = createInsertSchema(users).pick({
+  id: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  profileImageUrl: true,
+}).required({ id: true });
 
 export const insertEmailSubscriptionSchema = createInsertSchema(emailSubscriptions).pick({
   email: true,
@@ -177,6 +212,7 @@ export const insertGeneratedImageSchema = createInsertSchema(generatedImages).pi
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type EmailSubscription = typeof emailSubscriptions.$inferSelect;
 export type InsertEmailSubscription = z.infer<typeof insertEmailSubscriptionSchema>;

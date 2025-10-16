@@ -1,6 +1,7 @@
 import { 
   type User, 
   type InsertUser,
+  type UpsertUser,
   type EmailSubscription,
   type InsertEmailSubscription,
   type AnalyticsEvent,
@@ -28,6 +29,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>; // Required for Replit Auth
   updateUserUsage(id: string, currentUsage: number): Promise<User | undefined>;
   incrementUserUsage(id: string): Promise<User | undefined>;
 
@@ -87,17 +89,7 @@ export class MemStorage implements IStorage {
       AGENT_TEASERS_ENABLED: false,
     };
 
-    // Create a default demo user
-    const demoUser: User = {
-      id: 'demo-user-1',
-      username: 'demo',
-      password: 'hashed_password',
-      plan: 'free',
-      role: 'user',
-      currentUsage: 3,
-      usageLimit: 10,
-    };
-    this.users.set(demoUser.id, demoUser);
+    // Note: Demo user removed - using Replit Auth now
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -105,23 +97,58 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    // Note: username removed - using Replit Auth with email
+    return undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
+    const now = new Date();
     const user: User = { 
-      ...insertUser, 
+      ...insertUser,
       id,
       plan: 'free',
       role: 'user',
       currentUsage: 0,
       usageLimit: 10,
+      createdAt: now,
+      updatedAt: now,
     };
     this.users.set(id, user);
     return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existing = this.users.get(userData.id);
+    if (existing) {
+      const updated: User = {
+        ...existing,
+        email: userData.email ?? existing.email,
+        firstName: userData.firstName ?? existing.firstName,
+        lastName: userData.lastName ?? existing.lastName,
+        profileImageUrl: userData.profileImageUrl ?? existing.profileImageUrl,
+        updatedAt: new Date(),
+      };
+      this.users.set(userData.id, updated);
+      return updated;
+    } else {
+      const now = new Date();
+      const newUser: User = {
+        id: userData.id,
+        email: userData.email ?? null,
+        firstName: userData.firstName ?? null,
+        lastName: userData.lastName ?? null,
+        profileImageUrl: userData.profileImageUrl ?? null,
+        plan: 'free',
+        role: 'user',
+        currentUsage: 0,
+        usageLimit: 10,
+        createdAt: now,
+        updatedAt: now,
+      };
+      this.users.set(userData.id, newUser);
+      return newUser;
+    }
   }
 
   async updateUserUsage(id: string, currentUsage: number): Promise<User | undefined> {
@@ -313,8 +340,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    // Note: username field removed from schema (using Replit Auth now)
+    return undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -328,6 +355,35 @@ export class DatabaseStorage implements IStorage {
         role: 'user',
         currentUsage: 0,
         usageLimit: 10,
+      })
+      .returning();
+    return user;
+  }
+
+  // Required for Replit Auth - Reference: blueprint:javascript_log_in_with_replit
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        profileImageUrl: userData.profileImageUrl,
+        plan: 'free',
+        role: 'user',
+        currentUsage: 0,
+        usageLimit: 10,
+      })
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: userData.profileImageUrl,
+          updatedAt: new Date(),
+        },
       })
       .returning();
     return user;
