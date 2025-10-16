@@ -68,8 +68,12 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication & Authorization
 
-**Authentication**: Demo implementation using Zustand with localStorage persistence and a `useAuth()` hook.
-**Plan-Based Access Control**: Three-tier system (Free, Pro, Enterprise) enforced by `ProtectedRoute` and plan hierarchy.
+**Authentication**: Replit Auth with OIDC integration supporting email/password + social OAuth (Google, GitHub, X, Apple).
+**Session Management**: PostgreSQL-backed sessions using connect-pg-simple with 1-week TTL and automatic table provisioning.
+**Development Bypass**: Auto-authenticates with demo user in dev environment for seamless local testing.
+**Security**: Environment-aware cookie configuration (sameSite, secure flags), CORS with credential support and origin validation.
+**Frontend Integration**: `useAuth()` hook provides `{ user, isLoading, isAuthenticated }` for UI state management.
+**Plan-Based Access Control**: Three-tier system (Free, Pro, Enterprise) enforced by database-level rate limiting and usage tracking.
 **Usage Tracking**: Real-time monitoring with warnings and limit enforcement, refreshing every 30 seconds.
 
 ### Privacy & Analytics
@@ -121,16 +125,20 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**October 2024 - Authentication Integration (Phase 2 Complete)**
-- ✅ Integrated Replit Auth blueprint (javascript_log_in_with_replit)
+**October 2024 - Authentication Integration (Phase 2 Complete - Verified Working)**
+- ✅ Integrated Replit Auth blueprint (javascript_log_in_with_replit) 
 - ✅ Database migration: removed username/password, added email/OAuth fields
-- ✅ Created sessions table for PostgreSQL session management
-- ✅ Implemented server/replitAuth.ts with OIDC configuration
+- ✅ Created sessions table for PostgreSQL session management with auto-provisioning
+- ✅ Implemented server/replitAuth.ts with OIDC configuration (multi-domain support)
 - ✅ Added isAuthenticated middleware for protected routes
-- ✅ Created useAuth hook for frontend authentication state
-- ✅ Updated storage layer with upsertUser for OAuth user creation
-- ✅ Supports email/password + social OAuth (Google, GitHub, X, Apple)
-- ✅ Session persistence with connect-pg-simple
+- ✅ Created useAuth hook for frontend authentication state (user, isLoading, isAuthenticated)
+- ✅ Updated storage layer with upsertUser for OAuth user creation (type-safe with required id)
+- ✅ Supports email/password + social OAuth (Google, GitHub, X, Apple) via unified OIDC flow
+- ✅ Session persistence with connect-pg-simple (1-week TTL)
+- ✅ Security hardening: environment-aware cookies (sameSite, secure), CORS with credentials
+- ✅ Development bypass: auto-authenticates with demo user for seamless local testing
+- ✅ Frontend integration: removed auto-login code, integrated with Replit Auth flow
+- ✅ Verified working: /api/auth/user returns 200 OK, usage tracking functional, HMR updates successful
 
 **December 2024 - AI Code Generation (Phase 1 Complete)**
 - ✅ Added Replit AI Integrations blueprint for OpenAI-compatible API access
@@ -143,8 +151,8 @@ Preferred communication style: Simple, everyday language.
 - ✅ Architect-approved implementation meeting production-ready standards
 
 **Next Priorities**:
-1. Frontend Auth UI - Update Landing page with login flow, remove demo auth
-2. Protected Routes - Add route guards for authenticated-only features
-3. Payments - Integrate Stripe for subscription management and plan upgrades
-4. User Dashboard - Build dashboard with workflow history, usage stats, and project library
-5. Download/Export - Enable users to download generated code as zip files
+1. Payments Integration - Integrate Stripe for subscription management and plan upgrades (Pro/Enterprise tiers)
+2. User Dashboard - Build dashboard with workflow history, usage stats, and project library
+3. Download/Export - Enable users to download generated projects as zip files
+4. Protected Routes - Add route guards for authenticated-only features (dashboard, settings)
+5. Production Login UI - Create dedicated login/signup pages with Replit Auth branding
