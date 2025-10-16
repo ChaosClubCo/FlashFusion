@@ -98,6 +98,20 @@ export const generatedProjects = pgTable("generated_projects", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Generated images - stores AI-generated images
+export const generatedImages = pgTable("generated_images", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  prompt: text("prompt").notNull(),
+  style: text("style").notNull(), // photorealistic, digital-art, sketch, cinematic, anime, fantasy
+  model: text("model").notNull().default("dall-e-3"), // dall-e-3, stable-diffusion, midjourney, etc.
+  imageUrl: text("image_url"), // URL or path to the generated image
+  settings: text("settings"), // JSON object: {aspectRatio, quality, resolution, etc.}
+  status: text("status").notNull().default("pending"), // pending, generating, completed, failed
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -152,6 +166,15 @@ export const insertGeneratedProjectSchema = createInsertSchema(generatedProjects
   metadata: true,
 });
 
+export const insertGeneratedImageSchema = createInsertSchema(generatedImages).pick({
+  userId: true,
+  prompt: true,
+  style: true,
+  model: true,
+  imageUrl: true,
+  settings: true,
+});
+
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -170,6 +193,8 @@ export type WorkflowResult = typeof workflowResults.$inferSelect;
 export type InsertWorkflowResult = z.infer<typeof insertWorkflowResultSchema>;
 export type GeneratedProject = typeof generatedProjects.$inferSelect;
 export type InsertGeneratedProject = z.infer<typeof insertGeneratedProjectSchema>;
+export type GeneratedImage = typeof generatedImages.$inferSelect;
+export type InsertGeneratedImage = z.infer<typeof insertGeneratedImageSchema>;
 
 // Feature flags type
 export type FeatureFlags = {

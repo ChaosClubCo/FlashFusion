@@ -10,11 +10,14 @@ import {
   type InsertWorkflowRun,
   type GeneratedProject,
   type InsertGeneratedProject,
+  type GeneratedImage,
+  type InsertGeneratedImage,
   users,
   emailSubscriptions,
   analyticsEvents,
   workflowRuns,
   generatedProjects,
+  generatedImages,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -49,6 +52,13 @@ export interface IStorage {
   getGeneratedProject(id: string): Promise<GeneratedProject | undefined>;
   getGeneratedProjectsByUser(userId: string): Promise<GeneratedProject[]>;
   deleteGeneratedProject(id: string): Promise<boolean>;
+
+  // Generated image methods
+  createGeneratedImage(data: InsertGeneratedImage): Promise<GeneratedImage>;
+  getGeneratedImage(id: string): Promise<GeneratedImage | undefined>;
+  getGeneratedImagesByUser(userId: string): Promise<GeneratedImage[]>;
+  updateGeneratedImage(id: string, data: Partial<Omit<GeneratedImage, 'id' | 'userId' | 'createdAt'>>): Promise<GeneratedImage | undefined>;
+  deleteGeneratedImage(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -57,6 +67,7 @@ export class MemStorage implements IStorage {
   private analyticsEvents: AnalyticsEvent[];
   private workflowRuns: Map<string, WorkflowRun>;
   private generatedProjects: Map<string, GeneratedProject>;
+  private generatedImages: Map<string, GeneratedImage>;
   private featureFlags: FeatureFlags;
 
   constructor() {
@@ -65,6 +76,7 @@ export class MemStorage implements IStorage {
     this.analyticsEvents = [];
     this.workflowRuns = new Map();
     this.generatedProjects = new Map();
+    this.generatedImages = new Map();
     this.featureFlags = {
       PROMO_LAUNCH50: true,
       PWA_ENABLED: false,
@@ -227,6 +239,46 @@ export class MemStorage implements IStorage {
 
   async deleteGeneratedProject(id: string): Promise<boolean> {
     return this.generatedProjects.delete(id);
+  }
+
+  async createGeneratedImage(data: InsertGeneratedImage): Promise<GeneratedImage> {
+    const image: GeneratedImage = {
+      id: randomUUID(),
+      userId: data.userId,
+      prompt: data.prompt,
+      style: data.style,
+      model: data.model || 'dall-e-3',
+      imageUrl: data.imageUrl || null,
+      settings: data.settings || null,
+      status: 'pending',
+      errorMessage: null,
+      createdAt: new Date(),
+    };
+    this.generatedImages.set(image.id, image);
+    return image;
+  }
+
+  async getGeneratedImage(id: string): Promise<GeneratedImage | undefined> {
+    return this.generatedImages.get(id);
+  }
+
+  async getGeneratedImagesByUser(userId: string): Promise<GeneratedImage[]> {
+    return Array.from(this.generatedImages.values())
+      .filter((image) => image.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async updateGeneratedImage(id: string, data: Partial<Omit<GeneratedImage, 'id' | 'userId' | 'createdAt'>>): Promise<GeneratedImage | undefined> {
+    const image = this.generatedImages.get(id);
+    if (!image) return undefined;
+
+    const updatedImage = { ...image, ...data };
+    this.generatedImages.set(id, updatedImage);
+    return updatedImage;
+  }
+
+  async deleteGeneratedImage(id: string): Promise<boolean> {
+    return this.generatedImages.delete(id);
   }
 }
 
@@ -401,6 +453,50 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(generatedProjects)
       .where(eq(generatedProjects.id, id));
+    return true;
+  }
+
+  async createGeneratedImage(data: InsertGeneratedImage): Promise<GeneratedImage> {
+    const [image] = await db
+      .insert(generatedImages)
+      .values({
+        id: randomUUID(),
+        ...data,
+      })
+      .returning();
+    return image;
+  }
+
+  async getGeneratedImage(id: string): Promise<GeneratedImage | undefined> {
+    const [image] = await db
+      .select()
+      .from(generatedImages)
+      .where(eq(generatedImages.id, id));
+    return image || undefined;
+  }
+
+  async getGeneratedImagesByUser(userId: string): Promise<GeneratedImage[]> {
+    const images = await db
+      .select()
+      .from(generatedImages)
+      .where(eq(generatedImages.userId, userId))
+      .orderBy(desc(generatedImages.createdAt));
+    return images;
+  }
+
+  async updateGeneratedImage(id: string, data: Partial<Omit<GeneratedImage, 'id' | 'userId' | 'createdAt'>>): Promise<GeneratedImage | undefined> {
+    const [image] = await db
+      .update(generatedImages)
+      .set(data)
+      .where(eq(generatedImages.id, id))
+      .returning();
+    return image || undefined;
+  }
+
+  async deleteGeneratedImage(id: string): Promise<boolean> {
+    await db
+      .delete(generatedImages)
+      .where(eq(generatedImages.id, id));
     return true;
   }
 }
