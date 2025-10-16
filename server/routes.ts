@@ -6,6 +6,7 @@ import {
   insertAnalyticsEventSchema,
   insertGenerationJobSchema,
   insertWorkflowRunSchema,
+  insertGeneratedImageSchema,
 } from "@shared/schema";
 import { z } from "zod";
 import { rateLimitMiddleware } from "./rateLimit";
@@ -391,6 +392,121 @@ Respond with JSON in this exact format:
     } catch (error) {
       console.error('Error updating workflow:', error);
       res.status(500).json({ error: 'Failed to update workflow' });
+    }
+  });
+
+  // AI Image Generation endpoint
+  app.post('/api/generate-image', async (req, res) => {
+    try {
+      const validated = insertGeneratedImageSchema.parse(req.body);
+
+      // Set headers for streaming
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+
+      // Send initial progress
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Initializing image generation...', progress: 10 })}\n\n`);
+
+      // Create initial database entry
+      const imageRecord = await storage.createGeneratedImage({
+        ...validated,
+        imageUrl: null,
+      });
+
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Generating image with AI...', progress: 30 })}\n\n`);
+
+      // Parse settings if they're a string
+      const settings = typeof validated.settings === 'string' 
+        ? JSON.parse(validated.settings) 
+        : validated.settings;
+
+      // Call OpenAI DALL-E API
+      const imageResponse = await openai.images.generate({
+        model: validated.model || "dall-e-3",
+        prompt: `${validated.prompt}${validated.style ? ` in ${validated.style} style` : ''}`,
+        n: 1,
+        size: settings?.size || "1024x1024",
+        quality: settings?.quality || "standard",
+      });
+
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Processing generated image...', progress: 80 })}\n\n`);
+
+      const imageUrl = imageResponse.data?.[0]?.url;
+      
+      if (!imageUrl) {
+        throw new Error('No image generated');
+      }
+
+      res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Saving image...', progress: 95 })}\n\n`);
+
+      // Update database with image URL and success status
+      const updatedImage = await storage.updateGeneratedImage(imageRecord.id, {
+        imageUrl,
+        status: 'completed',
+      });
+
+      // Send final result
+      res.write(`data: ${JSON.stringify({ 
+        type: 'complete', 
+        result: {
+          id: imageRecord.id,
+          imageUrl,
+          prompt: validated.prompt,
+          style: validated.style,
+        }, 
+        progress: 100 
+      })}\n\n`);
+      res.end();
+
+    } catch (error) {
+      console.error('Error generating image:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate image';
+      try {
+        res.write(`data: ${JSON.stringify({ type: 'error', error: errorMessage })}\n\n`);
+        res.end();
+      } catch (writeError) {
+        console.error('Error writing error response:', writeError);
+      }
+    }
+  });
+
+  // Get user's generated images
+  app.get('/api/images/user/:userId', async (req, res) => {
+    try {
+      const images = await storage.getGeneratedImagesByUser(req.params.userId);
+      res.json(images);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      res.status(500).json({ error: 'Failed to fetch images' });
+    }
+  });
+
+  // Get single image
+  app.get('/api/images/:id', async (req, res) => {
+    try {
+      const image = await storage.getGeneratedImage(req.params.id);
+      if (!image) {
+        return res.status(404).json({ error: 'Image not found' });
+      }
+      res.json(image);
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      res.status(500).json({ error: 'Failed to fetch image' });
+    }
+  });
+
+  // Delete image
+  app.delete('/api/images/:id', async (req, res) => {
+    try {
+      const deleted = await storage.deleteGeneratedImage(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Image not found' });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      res.status(500).json({ error: 'Failed to delete image' });
     }
   });
 
