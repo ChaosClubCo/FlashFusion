@@ -15,19 +15,14 @@ import { queryClient } from '@/lib/queryClient';
 import { analytics } from '@/utils/events';
 
 export default function Landing() {
-  const { isAuthenticated, login, user } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const [showLimitModal, setShowLimitModal] = useState(false);
   const { data: usageData } = useUsageCheck(user?.id || '', isAuthenticated);
   const incrementMutation = useUsageIncrement();
 
   useEffect(() => {
     analytics.track('landing_view');
-    
-    // Auto-login demo user for demonstration
-    if (!isAuthenticated) {
-      login('demo', 'free');
-    }
-  }, [isAuthenticated, login]);
+  }, []);
 
   const handleGenerate = () => {
     if (!user) return;
