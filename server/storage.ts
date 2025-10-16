@@ -21,7 +21,7 @@ import {
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -29,6 +29,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserUsage(id: string, currentUsage: number): Promise<User | undefined>;
+  incrementUserUsage(id: string): Promise<User | undefined>;
 
   // Email subscription methods
   createEmailSubscription(email: InsertEmailSubscription): Promise<EmailSubscription>;
@@ -128,6 +129,19 @@ export class MemStorage implements IStorage {
     if (!user) return undefined;
 
     const updatedUser = { ...user, currentUsage };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  async incrementUserUsage(id: string): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+
+    if (user.currentUsage >= user.usageLimit) {
+      return undefined; // At limit, cannot increment
+    }
+
+    const updatedUser = { ...user, currentUsage: user.currentUsage + 1 };
     this.users.set(id, updatedUser);
     return updatedUser;
   }
@@ -324,6 +338,16 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({ currentUsage })
       .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async incrementUserUsage(id: string): Promise<User | undefined> {
+    // Atomic increment with limit check
+    const [user] = await db
+      .update(users)
+      .set({ currentUsage: sql`${users.currentUsage} + 1` })
+      .where(sql`${users.id} = ${id} AND ${users.currentUsage} < ${users.usageLimit}`)
       .returning();
     return user || undefined;
   }

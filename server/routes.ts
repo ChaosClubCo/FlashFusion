@@ -397,8 +397,28 @@ Respond with JSON in this exact format:
 
   // AI Image Generation endpoint
   app.post('/api/generate-image', async (req, res) => {
+    let imageRecordId: string | null = null;
+    
     try {
       const validated = insertGeneratedImageSchema.parse(req.body);
+
+      // Check user exists
+      const user = await storage.getUser(validated.userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Atomically claim the credit BEFORE generation starts
+      // This prevents race conditions where multiple requests pass the limit check
+      const updatedUser = await storage.incrementUserUsage(validated.userId);
+      if (!updatedUser) {
+        // Increment failed because user is at limit
+        return res.status(403).json({ 
+          error: 'Usage limit reached. Please upgrade your plan.',
+          currentUsage: user.currentUsage,
+          usageLimit: user.usageLimit,
+        });
+      }
 
       // Set headers for streaming
       res.setHeader('Content-Type', 'text/event-stream');
@@ -413,6 +433,7 @@ Respond with JSON in this exact format:
         ...validated,
         imageUrl: null,
       });
+      imageRecordId = imageRecord.id;
 
       res.write(`data: ${JSON.stringify({ type: 'progress', message: 'Generating image with AI...', progress: 30 })}\n\n`);
 
@@ -462,6 +483,19 @@ Respond with JSON in this exact format:
     } catch (error) {
       console.error('Error generating image:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to generate image';
+      
+      // Update the image record with error status if it was created
+      if (imageRecordId) {
+        try {
+          await storage.updateGeneratedImage(imageRecordId, {
+            status: 'failed',
+            errorMessage,
+          });
+        } catch (updateError) {
+          console.error('Error updating image record with failure:', updateError);
+        }
+      }
+
       try {
         res.write(`data: ${JSON.stringify({ type: 'error', error: errorMessage })}\n\n`);
         res.end();
