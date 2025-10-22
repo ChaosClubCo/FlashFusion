@@ -3,6 +3,7 @@ import { generationJobs, users } from '@shared/schema';
 import { eq, or } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 import type { GenerationJob } from '@shared/schema';
+import { openai } from './openai';
 
 // Job queue (in-memory for simplicity, could be Redis in production)
 const jobQueue: string[] = [];
@@ -141,18 +142,89 @@ async function processQueue() {
 }
 
 async function simulateGeneration(prompt: string): Promise<any> {
-  // Simulate API call delay (1-3 seconds)
-  const delay = Math.random() * 2000 + 1000;
-  await new Promise(resolve => setTimeout(resolve, delay));
+  try {
+    // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+    const completion = await openai.chat.completions.create({
+      model: "gpt-5",
+      messages: [
+        {
+          role: "system",
+          content: `You are FlashFusion AI, an expert full-stack application generator. Generate production-ready code based on user prompts.
 
-  // Simulate generation result
-  return {
-    prompt,
-    generated: `AI generated response for: "${prompt}"`,
-    timestamp: new Date().toISOString(),
-    model: 'gpt-4',
-    tokens: Math.floor(Math.random() * 1000) + 100,
-  };
+Return your response as a JSON object with the following structure:
+{
+  "appName": "string",
+  "description": "string",
+  "techStack": ["string"],
+  "files": [
+    {
+      "path": "string",
+      "content": "string",
+      "language": "string"
+    }
+  ],
+  "installCommands": ["string"],
+  "runCommands": ["string"],
+  "features": ["string"]
+}
+
+Generate complete, working code that follows best practices.`
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.7,
+      max_tokens: 4000,
+    });
+
+    const result = JSON.parse(completion.choices[0].message.content || '{}');
+
+    return {
+      prompt,
+      generated: result,
+      timestamp: new Date().toISOString(),
+      model: completion.model,
+      tokens: completion.usage?.total_tokens || 0,
+      finishReason: completion.choices[0].finish_reason,
+    };
+  } catch (error) {
+    console.error('OpenAI generation error:', error);
+
+    // Fallback to simulation if OpenAI fails (e.g., no API key)
+    console.warn('Falling back to simulated generation');
+
+    return {
+      prompt,
+      generated: {
+        appName: extractAppName(prompt),
+        description: `Generated app based on: ${prompt}`,
+        techStack: ["React", "TypeScript", "Tailwind CSS", "Express.js"],
+        files: [
+          {
+            path: "src/App.tsx",
+            content: `// Generated app for: ${prompt}\nimport React from 'react';\n\nfunction App() {\n  return <div>Your app here</div>;\n}\n\nexport default App;`,
+            language: "typescript"
+          }
+        ],
+        installCommands: ["npm install"],
+        runCommands: ["npm run dev"],
+        features: ["Basic setup", "TypeScript support", "React framework"]
+      },
+      timestamp: new Date().toISOString(),
+      model: 'simulated',
+      tokens: 0,
+      simulationMode: true,
+    };
+  }
+}
+
+function extractAppName(prompt: string): string {
+  // Simple extraction of app name from prompt
+  const words = prompt.split(' ').filter(w => w.length > 2);
+  return words.slice(0, 3).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
 // Retry logic for failed jobs
