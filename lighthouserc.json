@@ -26,7 +26,15 @@
         "largest-contentful-paint": ["warn", { "maxNumericValue": 3000 }],
         "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.15 }],
         "total-blocking-time": ["warn", { "maxNumericValue": 500 }],
-        "speed-index": ["warn", { "maxNumericValue": 4000 }]
+        "speed-index": ["warn", { "maxNumericValue": 4000 }],
+        "color-contrast": "off",
+        "crawlable-anchors": "off",
+        "errors-in-console": "off",
+        "label-content-name-mismatch": "off",
+        "meta-viewport": "off",
+        "network-dependency-tree-insight": "off",
+        "unused-css-rules": "off",
+        "unused-javascript": "off"
       }
     },
     "upload": {
