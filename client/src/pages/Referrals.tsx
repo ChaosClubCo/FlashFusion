@@ -154,6 +154,11 @@ export default function Referrals() {
   // Fetch referral data from API
   const { data: apiData, isLoading, error } = useQuery<ReferralData>({
     queryKey: ['/api/referrals'],
+    queryFn: async () => {
+      const response = await fetch('/api/referrals');
+      if (!response.ok) throw new Error('Failed to fetch referral data');
+      return response.json();
+    },
     retry: 1,
   });
 

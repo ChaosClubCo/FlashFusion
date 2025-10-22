@@ -194,6 +194,11 @@ export default function Billing() {
   // Fetch billing data from API
   const { data: apiData, isLoading, error } = useQuery<BillingData>({
     queryKey: ['/api/billing'],
+    queryFn: async () => {
+      const response = await fetch('/api/billing');
+      if (!response.ok) throw new Error('Failed to fetch billing data');
+      return response.json();
+    },
     retry: 1,
   });
 

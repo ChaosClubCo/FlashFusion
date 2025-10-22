@@ -121,6 +121,11 @@ export default function Dashboard() {
   // Fetch analytics data from API
   const { data: apiData, isLoading, error } = useQuery<AnalyticsStats>({
     queryKey: ['/api/analytics/stats'],
+    queryFn: async () => {
+      const response = await fetch('/api/analytics/stats');
+      if (!response.ok) throw new Error('Failed to fetch analytics');
+      return response.json();
+    },
     retry: 1,
   });
 

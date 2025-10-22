@@ -9,6 +9,10 @@ on:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    env:
+      # Mock database URL for CI - not a real database connection
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/lighthouse_ci_test
+      NODE_ENV: test
 
     steps:
       - name: Checkout code
