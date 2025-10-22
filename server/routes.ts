@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { 
+import {
   insertEmailSubscriptionSchema,
   insertAnalyticsEventSchema,
   insertGenerationJobSchema,
@@ -13,6 +13,13 @@ import { z } from "zod";
 import { rateLimitMiddleware } from "./rateLimit";
 import { createGenerationJob, getGenerationJob, retryJob } from "./generation";
 import { openai, openaiDirect } from "./openai";
+import {
+  createCheckoutSession,
+  createPortalSession,
+  handleWebhook,
+  isValidPlan,
+  type PlanType
+} from "./stripe";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup Replit Auth - Reference: blueprint:javascript_log_in_with_replit
@@ -594,6 +601,73 @@ Respond with JSON in this exact format:
       console.error('Error deleting image:', error);
       res.status(500).json({ error: 'Failed to delete image' });
     }
+  });
+
+  // Stripe payment routes
+
+  // Create Stripe Checkout Session
+  app.post('/api/stripe/create-checkout-session', async (req, res) => {
+    try {
+      const { plan, userId, successUrl, cancelUrl } = req.body;
+
+      if (!plan || !userId) {
+        return res.status(400).json({ error: 'Missing required fields: plan, userId' });
+      }
+
+      if (!isValidPlan(plan)) {
+        return res.status(400).json({ error: 'Invalid plan type' });
+      }
+
+      if (!successUrl || !cancelUrl) {
+        return res.status(400).json({ error: 'Missing required URLs: successUrl, cancelUrl' });
+      }
+
+      const session = await createCheckoutSession(
+        userId,
+        plan as PlanType,
+        successUrl,
+        cancelUrl
+      );
+
+      res.json({ sessionId: session.id });
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : 'Failed to create checkout session',
+      });
+    }
+  });
+
+  // Create Stripe Customer Portal Session
+  app.post('/api/stripe/create-portal-session', async (req, res) => {
+    try {
+      const { userId, returnUrl } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({ error: 'Missing required field: userId' });
+      }
+
+      if (!returnUrl) {
+        return res.status(400).json({ error: 'Missing required field: returnUrl' });
+      }
+
+      const session = await createPortalSession(userId, returnUrl);
+
+      res.json({ url: session.url });
+    } catch (error) {
+      console.error('Error creating portal session:', error);
+      res.status(500).json({
+        error: error instanceof Error ? error.message : 'Failed to create portal session',
+      });
+    }
+  });
+
+  // Stripe Webhook Handler
+  // IMPORTANT: This must use raw body, not JSON parsed body
+  // Add this middleware configuration in your main server file before JSON parsing:
+  // app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+  app.post('/api/stripe/webhook', async (req, res) => {
+    await handleWebhook(req, res);
   });
 
   const httpServer = createServer(app);
