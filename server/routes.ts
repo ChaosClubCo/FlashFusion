@@ -604,6 +604,75 @@ Respond with JSON in this exact format:
     }
   });
 
+  // Generated Projects Routes
+
+  // Get user's projects (authenticated)
+  app.get('/api/projects', async (req: any, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+      
+      // In development, use demo user
+      const userId = process.env.NODE_ENV === 'development' ? 'demo-user-1' : req.user.id;
+      const projects = await storage.getGeneratedProjectsByUser(userId);
+      res.json(projects);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      res.status(500).json({ error: 'Failed to fetch projects' });
+    }
+  });
+
+  // Get single project
+  app.get('/api/projects/:id', async (req, res) => {
+    try {
+      const project = await storage.getGeneratedProject(req.params.id);
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+      res.json(project);
+    } catch (error) {
+      console.error('Error fetching project:', error);
+      res.status(500).json({ error: 'Failed to fetch project' });
+    }
+  });
+
+  // Download project as zip
+  app.get('/api/projects/:id/download', async (req, res) => {
+    try {
+      const project = await storage.getGeneratedProject(req.params.id);
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+
+      // Parse files from JSON
+      const files = JSON.parse(project.files) as Array<{ path: string; content: string }>;
+      
+      // Create zip archive
+      const archiver = (await import('archiver')).default;
+      const archive = archiver('zip', { zlib: { level: 9 } });
+      
+      // Set response headers
+      const filename = `${project.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.zip`;
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      
+      // Pipe archive to response
+      archive.pipe(res);
+      
+      // Add files to archive
+      for (const file of files) {
+        archive.append(file.content, { name: file.path });
+      }
+      
+      // Finalize the archive
+      await archive.finalize();
+    } catch (error) {
+      console.error('Error downloading project:', error);
+      res.status(500).json({ error: 'Failed to download project' });
+    }
+  });
+
   // Stripe payment routes - Commented out until Stripe integration is implemented
   /*
   // Create Stripe Checkout Session
