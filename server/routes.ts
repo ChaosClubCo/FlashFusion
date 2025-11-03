@@ -13,13 +13,14 @@ import { z } from "zod";
 import { rateLimitMiddleware } from "./rateLimit";
 import { createGenerationJob, getGenerationJob, retryJob } from "./generation";
 import { openai, openaiDirect } from "./openai";
-import {
-  createCheckoutSession,
-  createPortalSession,
-  handleWebhook,
-  isValidPlan,
-  type PlanType
-} from "./stripe";
+// Stripe integration - Commented out until implemented
+// import {
+//   createCheckoutSession,
+//   createPortalSession,
+//   handleWebhook,
+//   isValidPlan,
+//   type PlanType
+// } from "./stripe";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup Replit Auth - Reference: blueprint:javascript_log_in_with_replit
@@ -603,8 +604,8 @@ Respond with JSON in this exact format:
     }
   });
 
-  // Stripe payment routes
-
+  // Stripe payment routes - Commented out until Stripe integration is implemented
+  /*
   // Create Stripe Checkout Session
   app.post('/api/stripe/create-checkout-session', async (req, res) => {
     try {
@@ -669,6 +670,7 @@ Respond with JSON in this exact format:
   app.post('/api/stripe/webhook', async (req, res) => {
     await handleWebhook(req, res);
   });
+  */
 
   const httpServer = createServer(app);
 

@@ -6,7 +6,6 @@ import { Metrics } from '@/components/Metrics';
 import { Features } from '@/components/Features';
 import { BuildProcess } from '@/components/BuildProcess';
 import { ConsentBanner } from '@/components/ConsentBanner';
-import { CommandPaletteHint } from '@/components/CommandPaletteHint';
 import { UsageWarning } from '@/components/UsageWarning';
 import { LimitReachedModal } from '@/components/LimitReachedModal';
 import { useAuth } from '@/hooks/useAuth';
@@ -179,7 +178,6 @@ export default function Landing() {
       </div>
 
       <ConsentBanner />
-      <CommandPaletteHint />
       
       {/* Limit Reached Modal */}
       <LimitReachedModal
