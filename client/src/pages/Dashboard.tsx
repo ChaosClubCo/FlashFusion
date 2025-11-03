@@ -21,9 +21,18 @@ export default function Dashboard() {
   });
 
   // Fetch usage stats
-  const { data: usageData } = useQuery({
+  const { data: usageData, error: usageError } = useQuery({
     queryKey: ['/api/usage/check', user?.id],
     enabled: !!user?.id,
+    queryFn: async () => {
+      const response = await fetch('/api/usage/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user?.id }),
+      });
+      if (!response.ok) throw new Error('Failed to fetch usage stats');
+      return response.json();
+    },
   });
 
   useEffect(() => {
@@ -81,13 +90,26 @@ export default function Dashboard() {
           </div>
 
           {/* Usage Stats */}
-          {usageData && (
-            <Card className="mb-8" data-testid="card-usage-stats">
-              <CardHeader>
-                <CardTitle>Usage Statistics</CardTitle>
-                <CardDescription>Your current plan and usage</CardDescription>
-              </CardHeader>
-              <CardContent>
+          <Card className="mb-8" data-testid="card-usage-stats">
+            <CardHeader>
+              <CardTitle>Usage Statistics</CardTitle>
+              <CardDescription>Your current plan and usage</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {usageError ? (
+                <p className="text-sm text-muted-foreground">
+                  Unable to load usage statistics. Please try again later.
+                </p>
+              ) : !usageData ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i}>
+                      <Skeleton className="h-4 w-20 mb-2" />
+                      <Skeleton className="h-8 w-24" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Plan</p>
@@ -108,9 +130,9 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              )}
+            </CardContent>
+          </Card>
 
           {/* Projects Section */}
           <div className="mb-4">
