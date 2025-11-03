@@ -14,6 +14,7 @@ import { I18nProvider } from "@/i18n";
 
 // Lazy load pages for code splitting
 const Landing = lazy(() => import("@/pages/Landing"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
 const QA = lazy(() => import("@/pages/QA"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
@@ -47,6 +48,7 @@ function Router() {
     <Suspense fallback={<PageLoader />}>
       <Switch>
         <Route path="/" component={Landing} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/pricing" component={Pricing} />
         <Route path="/qa" component={QA} />
         <Route path="/privacy" component={Privacy} />
