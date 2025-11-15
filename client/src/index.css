@@ -32,15 +32,15 @@
 
   --sidebar-border: 0 0% 88%;
 
-  --sidebar-primary: 24 95% 53%;
+  --sidebar-primary: 217 91% 60%;
 
   --sidebar-primary-foreground: 0 0% 98%;
 
-  --sidebar-accent: 24 8% 88%;
+  --sidebar-accent: 217 20% 88%;
 
   --sidebar-accent-foreground: 0 0% 9%;
 
-  --sidebar-ring: 24 95% 53%;
+  --sidebar-ring: 217 91% 60%;
 
   --popover: 0 0% 92%;
 
@@ -48,7 +48,7 @@
 
   --popover-border: 0 0% 86%;
 
-  --primary: 24 95% 53%;
+  --primary: 217 91% 60%;
 
   --primary-foreground: 0 0% 98%;
 
@@ -69,8 +69,8 @@
   --destructive-foreground: 0 0% 98%;
 
   --input: 0 0% 70%;
-  --ring: 24 95% 53%;
-  --chart-1: 24 95% 45%;
+  --ring: 217 91% 60%;
+  --chart-1: 217 91% 60%;
   --chart-2: 187 85% 42%;
   --chart-3: 330 85% 48%;
   --chart-4: 280 75% 50%;
@@ -91,7 +91,8 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  /* Gradient colors for cinematic background */
+  /* Gradient colors for brand-aligned background */
+  --gradient-blue: 217 91% 60%;
   --gradient-orange: 24 95% 53%;
   --gradient-cyan: 187 85% 50%;
   --gradient-magenta: 330 85% 55%;
@@ -155,15 +156,15 @@
 
   --sidebar-border: 0 0% 17%;
 
-  --sidebar-primary: 24 95% 53%;
+  --sidebar-primary: 217 91% 60%;
 
   --sidebar-primary-foreground: 0 0% 7%;
 
-  --sidebar-accent: 24 8% 18%;
+  --sidebar-accent: 217 20% 18%;
 
   --sidebar-accent-foreground: 0 0% 95%;
 
-  --sidebar-ring: 24 95% 53%;
+  --sidebar-ring: 217 91% 60%;
 
   --popover: 0 0% 13%;
 
@@ -171,7 +172,7 @@
 
   --popover-border: 0 0% 20%;
 
-  --primary: 24 95% 53%;
+  --primary: 217 91% 60%;
 
   --primary-foreground: 0 0% 7%;
 
@@ -192,8 +193,8 @@
   --destructive-foreground: 0 0% 98%;
 
   --input: 0 0% 35%;
-  --ring: 24 95% 53%;
-  --chart-1: 24 95% 65%;
+  --ring: 217 91% 60%;
+  --chart-1: 217 91% 65%;
   --chart-2: 187 85% 65%;
   --chart-3: 330 85% 68%;
   --chart-4: 280 75% 70%;
@@ -208,7 +209,8 @@
   --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00), 0px 8px 10px -1px hsl(0 0% 0% / 0.00);
   --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.00);
 
-  /* Gradient colors for cinematic background */
+  /* Gradient colors for brand-aligned background */
+  --gradient-blue: 217 91% 60%;
   --gradient-orange: 24 95% 53%;
   --gradient-cyan: 187 85% 50%;
   --gradient-magenta: 330 85% 55%;

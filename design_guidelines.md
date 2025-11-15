@@ -1,40 +1,50 @@
 # FlashFusion Design Guidelines
 
 ## Design Approach
-**Reference-Based (Cinematic Tech Platform)**: Drawing inspiration from Linear, Vercel, and Stripe's modern developer tool aesthetics with a distinctive cinematic twist. This is an experience-focused platform where visual impact drives conversion.
+**Professional Platform Identity**: Based on app.base44 design system featuring a clean, modern aesthetic with blue/orange branding. Emphasizes clarity, professional polish, and universal app generation capabilities with a focus on AI orchestration and workflow automation.
 
 ## Core Design Elements
 
 ### A. Color Palette
 
-**Gradient Mesh Background**
-- Orange → Cyan → Magenta gradient mesh
-- Grain texture overlay at 5% opacity
-- Creates depth and premium feel
+**Primary Brand Colors**
+- **Primary Blue**: `hsl(217 91% 60%)` - Main brand color, used for primary CTAs and branding
+- **Primary Orange**: `hsl(24 95% 53%)` - Accent color, used for secondary CTAs and highlights
+- **Cyan Accent**: `hsl(187 85% 50%)` - Supporting brand color for visual interest
+- **Magenta Accent**: `hsl(330 85% 55%)` - Tertiary accent for special highlights
 
-**Glass Morphism Layer**
-- Foreground: `rgba(14, 14, 16, 0.85)` with `backdrop-blur(6px)`
-- Creates floating, elevated interface over cinematic background
+**Neutral Palette**
+- **Dark Background**: `hsl(0 0% 7%)` - Primary dark background
+- **Card Background**: `hsl(0 0% 9%)` - Elevated surface color
+- **Light Background**: `hsl(0 0% 98%)` - Primary light background
+- **Foreground Text**: `hsl(0 0% 95%)` (dark mode), `hsl(0 0% 9%)` (light mode)
 
-**Brand Colors**
-- Primary CTA: Orange (vibrant, energetic)
-- Focus States: Orange, 2px ring
-- Text: High contrast white/near-white on dark surfaces
+**Functional Colors**
+- **Success**: Blue primary for confirmed actions
+- **Warning**: Orange for attention-requiring items
+- **Error**: `hsl(0 84% 45%)` - Destructive actions
+- **Info**: Cyan for informational messages
 
 ### B. Typography
 
 **Font System**
-- Google Fonts via stylesheet
+- **Primary Font**: Inter (Google Fonts) - Used for all text
 - Display swap for performance
-- Font Loading API fallback
-- Headings: Bold, impactful weights
-- Body: Readable, 16px minimum (iOS keyboard requirement)
+- Minimum 16px for body text (iOS keyboard requirement)
+- **Weights**: 400 (Regular), 600 (Semibold), 700 (Bold)
 
 **Hierarchy**
-- H1: "Build Apps 10× Faster with AI" - Hero statement
-- Subheadings: Feature descriptions, section titles
-- Body: Clear, scannable supporting copy
-- Labels: Metrics, badges, status indicators
+- **H1**: 48px-72px - Main headlines "FlashFusion - Universal App Generator"
+- **H2**: 36px-48px - Section headings
+- **H3**: 24px-30px - Subsection titles
+- **Body**: 16px-18px - Main content, descriptions
+- **Small**: 14px - Supporting text, labels
+- **Caption**: 12px - Metadata, timestamps
+
+**Text Colors**
+- **Primary**: Default foreground color
+- **Secondary**: `hsl(var(--muted-foreground))` for supporting text
+- **Accent**: Blue or Orange for emphasized text
 
 ### C. Layout System
 
