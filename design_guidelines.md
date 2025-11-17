@@ -1,199 +1,258 @@
-# FlashFusion Design Guidelines
+# FlashFusion Design Guidelines - app.base44 Dark Theme
 
 ## Design Approach
-**Professional Platform Identity**: Based on app.base44 design system featuring a clean, modern aesthetic with blue/orange branding. Emphasizes clarity, professional polish, and universal app generation capabilities with a focus on AI orchestration and workflow automation.
+**Professional Dark SaaS Platform**: Based on exact app.base44 design system featuring a dark navy aesthetic with orange accent CTAs, gradient text effects, and colored icon backgrounds. Emphasizes professional polish, AI-powered development capabilities, and enterprise-grade features.
 
 ## Core Design Elements
 
 ### A. Color Palette
 
 **Primary Brand Colors**
-- **Primary Blue**: `hsl(217 91% 60%)` - Main brand color, used for primary CTAs and branding
-- **Primary Orange**: `hsl(24 95% 53%)` - Accent color, used for secondary CTAs and highlights
-- **Cyan Accent**: `hsl(187 85% 50%)` - Supporting brand color for visual interest
-- **Magenta Accent**: `hsl(330 85% 55%)` - Tertiary accent for special highlights
+- **Primary Blue**: `hsl(217 91% 60%)` - Used for accents, borders, and highlights
+- **Accent Orange**: `hsl(24 95% 53%)` - Primary CTAs, badges, and important actions
+- **Cyan Accent**: `hsl(187 85% 50%)` - Supporting highlights and visual interest
+- **Purple Accent**: `hsl(280 75% 65%)` - Tertiary accent for special elements
 
-**Neutral Palette**
-- **Dark Background**: `hsl(0 0% 7%)` - Primary dark background
-- **Card Background**: `hsl(0 0% 9%)` - Elevated surface color
-- **Light Background**: `hsl(0 0% 98%)` - Primary light background
-- **Foreground Text**: `hsl(0 0% 95%)` (dark mode), `hsl(0 0% 9%)` (light mode)
+**Dark Navy Background System**
+- **Background**: `hsl(220 26% 6%)` - Very dark navy, primary background
+- **Card Background**: `hsl(220 24% 8%)` - Slightly elevated surfaces
+- **Border**: `hsl(220 18% 15%)` - Subtle borders and separators
+- **Card Border**: `hsl(220 18% 12%)` - Card-specific borders
 
-**Functional Colors**
-- **Success**: Blue primary for confirmed actions
-- **Warning**: Orange for attention-requiring items
-- **Error**: `hsl(0 84% 45%)` - Destructive actions
-- **Info**: Cyan for informational messages
+**Gradient Text Effects**
+- **Gradient Gold**: `hsl(45 93% 58%)` - "Reality" in hero headline
+- **Gradient Cyan**: `hsl(187 85% 60%)` - "With" in hero headline
+- **Gradient Purple**: `hsl(280 75% 65%)` - "AI" in hero headline
+- Usage: `bg-gradient-to-r from-[hsl(var(--gradient-gold))] via-[hsl(var(--gradient-text-cyan))] to-[hsl(var(--gradient-text-purple))] bg-clip-text text-transparent`
+
+**Text Colors**
+- **Foreground**: `hsl(0 0% 95%)` - Primary text color
+- **Muted Foreground**: `hsl(0 0% 65%)` - Secondary/supporting text
+
+**Colored Icon Backgrounds** (for feature cards)
+- Orange: `from-accent to-accent/80` - AI Code Generation
+- Pink: `from-pink-500 to-pink-600` - Content Creation, Analytics
+- Red: `from-red-500 to-red-600` - One-Click Deploy
+- Green: `from-green-500 to-green-600` - Revenue Streams
+- Purple: `from-purple-500 to-purple-600` - Enterprise Security
+- Blue: `from-blue-500 to-blue-600` - Analytics & Insights, Publishing
+- Cyan: `from-cyan-500 to-cyan-600` - Quality Assurance
 
 ### B. Typography
 
 **Font System**
 - **Primary Font**: Inter (Google Fonts) - Used for all text
 - Display swap for performance
-- Minimum 16px for body text (iOS keyboard requirement)
-- **Weights**: 400 (Regular), 600 (Semibold), 700 (Bold)
+- Minimum 16px for body text
 
 **Hierarchy**
-- **H1**: 48px-72px - Main headlines "FlashFusion - Universal App Generator"
-- **H2**: 36px-48px - Section headings
-- **H3**: 24px-30px - Subsection titles
-- **Body**: 16px-18px - Main content, descriptions
-- **Small**: 14px - Supporting text, labels
-- **Caption**: 12px - Metadata, timestamps
-
-**Text Colors**
-- **Primary**: Default foreground color
-- **Secondary**: `hsl(var(--muted-foreground))` for supporting text
-- **Accent**: Blue or Orange for emphasized text
+- **H1 Hero**: 96px (6xl/7xl/8xl) - "Transform Ideas Into Reality With AI"
+- **H2 Sections**: 60px-72px (4xl/5xl) - Section headings
+- **H3 Cards**: 24px (2xl) - Card titles
+- **Body**: 16px-20px (base/lg/xl) - Main content, descriptions
+- **Small**: 14px - Supporting text, labels, metadata
+- **Caption**: 12px (xs) - Metadata, timestamps
 
 ### C. Layout System
 
-**Spacing Primitives** (Tailwind units)
-- Vertical stack gap: 64 (16rem)
-- Section padding: 160 (40rem) vertical
-- Card/component spacing: 16, 24, 32 for internal elements
-- Responsive: Reduce by 50% on mobile (375px)
+**Spacing Primitives**
+- Section vertical padding: `py-16` to `py-20` (4rem to 5rem)
+- Container max-width: `max-w-7xl` (1280px) for most sections, `max-w-4xl` for FAQ
+- Card/component spacing: `gap-6` to `gap-8` between grid items
+- Internal card padding: Standard Card component defaults
+- Responsive: Stack on mobile, grid on tablet/desktop
 
 **Viewport Strategy**
-- Use `100dvh` with `vh` fallback (iOS hardening)
 - Sections flow naturally, not forced into viewport heights
-- Z-index layering: Background (0) → Foreground glass (10) → Modals (50)
+- Use `min-h-screen` only on outer container
+- Z-index layering: Background (-10) → Content (0) → Modals (50)
 
 **Grid System**
-- Features: 2-column → 1-column responsive (768px breakpoint)
-- Metrics: 6-stat display with equal distribution
-- Build Process: 5-card timeline, horizontal scroll on mobile
-- Pricing: 3-tier layout, stack on mobile
+- Features: 3-column on desktop (`md:grid-cols-2 lg:grid-cols-3`), stack on mobile
+- Pricing: 3-column on desktop (`md:grid-cols-3`), stack on mobile
+- Workflows: 3-column on desktop (`md:grid-cols-2 lg:grid-cols-3`), stack on mobile
+- FAQ categories: 2-column mobile, 3-column desktop (`grid-cols-2 md:grid-cols-3`)
 
 ### D. Component Library
 
 **Hero Section**
-- Large H1 with supporting subtitle
-- Dual CTAs: Primary (orange, solid) + Secondary (outline with blur background)
-- Email capture field (≥16px input)
-- Trust badges: "Free tier • 2-min setup • No card"
-- Skeleton state during font load
+- Promotional banner with gradient background and gift icon
+- Secondary "Join 10,000+ creators" banner
+- Large gradient headline: "Transform Ideas Into **Reality With AI**"
+- Subtitle with orange accent text for "production-ready applications"
+- Feature pills with colored dots (orange, cyan, purple)
+- Dual CTAs: Primary orange with 50% OFF badge + Outline demo button
+- Glass morphism styling: `bg-card/50 backdrop-blur-sm border border-border`
 
-**Metrics Dashboard**
-- 6 live statistics (Visitors, Demos, Developers, Apps, Uptime, Rating)
-- Staggered animation: 50ms delay between items
-- ARIA labels for accessibility
-- Live region for screen readers
+**Video Preview Section**
+- Gradient background: `linear-gradient(135deg, hsla(217, 50%, 15%, 0.4) 0%, hsla(187, 50%, 20%, 0.4) 100%)`
+- Corner icons in colored rounded squares (orange, cyan, pink, purple)
+- Central play button: Large gradient orange circle with play icon
+- Stats cards: 3-column grid showing "10,000+", "50M+", "99.9%"
+- Trust badges: Company names in muted text
 
 **Feature Cards**
-- 4 primary features in grid
-- Icon + Title + Description format
-- Glass morphism styling
-- Empty state with CTA when content missing
+- 6 cards in responsive grid
+- Colored icon backgrounds (12x12 rounded-lg with gradient)
+- Title + description format
+- Colored badges matching icon theme
+- "Learn more" links in accent color
+- Glass morphism: `bg-card/80 backdrop-blur-sm border-border`
+- Hover elevation: `hover-elevate` class
 
-**Build Process Timeline**
-- 5 steps: Describe → Analyze → Generate → Test → Deploy
-- Sequential visual flow
-- Step numbers and descriptions
-- Progress indication
+**Pricing Cards**
+- Promotional banner at top with 50% OFF messaging
+- 3-tier layout: Starter Pro, Professional Pro (Most Popular), Enterprise Pro
+- Badge positions: top-left for 50% OFF, top-center for Popular, top-right for Enterprise
+- Price display: Large current price + strikethrough original + "/mo"
+- "View plans & options" button with ChevronDown icon
+- Feature list with checkmark icons
+- Professional Pro has gradient background and accent border for emphasis
+- Guarantees section below with checkmarks and support icons
 
-**Usage Controls**
-- UsageWarning: Appears at 80% limit threshold
-- LimitReachedModal: Full-screen overlay with focus trap
-- Keyboard-operable, visible focus states
-- Upgrade path CTAs
+**Workflows Showcase**
+- Gradient headline with "FlashFusion Complete" in gradient colors
+- 6 workflow cards in responsive grid
+- Each card: Colored icon (12x12) + Title + Description + Time/Complexity badges + Orange "Start Workflow" button
+- Time format: Clock icon + "2-5 minutes"
+- Complexity badges: "Simple" or "Medium" in outline style
 
-**Navigation**
-- Header: Logo, primary navigation, skip link (visible on focus)
-- Footer: Legal links, consent banner trigger, status indicator
-- StatusPill: Shows system health in header
+**FAQ Section**
+- Pink question mark icon in circle
+- Search bar with magnifying glass icon
+- Category tabs with emojis (📋 💬 💰 ✨ ⚙️ 🔒)
+- Accordion items with glass morphism backgrounds
+- "Contact Support" button at bottom
 
-**Forms & Inputs**
-- Minimum 16px font size (iOS requirement)
-- Clear labels and placeholders
-- Focus rings: 2px orange
-- Error states with helpful copy
+**Navigation (Existing)**
+- Header: Logo, primary navigation, Sign In / Sign Up buttons
+- Orange "Sign Up" button, outline "Sign In" button
+- "Try Interactive Demo" button with play icon
 
 ### E. Animations & Motion
 
-**Parallax Background**
-- Background Y: 0 → -64px
-- Loop: 30s linear
-- **Disabled when `prefers-reduced-motion`** - static gradient instead
-
 **Entrance Animations** (Framer Motion)
-- Metrics: Stagger 50ms per item
-- Feature cards: Fade up on scroll
-- All respect reduced-motion preference
+- Hero elements: Stagger with 0.1s delays
+- Scroll-triggered: `whileInView` with `once: true`
+- All respect `prefers-reduced-motion` preference
+
+**Parallax Background**
+- Subtle vertical movement: 0 → -64px over 30s
+- Disabled when `prefers-reduced-motion` active
+- Dark navy gradient mesh with very subtle radial gradients
 
 **Micro-interactions**
-- Button hover states (built-in, no custom needed)
-- Loading skeletons for content
+- Button hover states (built-in via `hover-elevate`)
+- Card hover elevation
 - Smooth transitions between states
-
-**Performance Constraint**
-- Animations minimal and purposeful
-- Never impact LCP or CLS metrics
-- Command palette hint renders after idle
 
 ### F. Accessibility Requirements
 
 **WCAG 2.1 AA Compliance**
-- Contrast ratio ≥ 4.5:1
-- Skip link to `#main` (visible on focus)
-- Focus trap in modals with `aria-modal="true"`
-- Keyboard navigation: Header → Main → Footer
-- VoiceOver: Correct reading order
+- Contrast ratio ≥ 4.5:1 for all text
+- Focus indicators on all interactive elements
+- Keyboard navigation support
+- ARIA labels on complex components
 
 **Focus Management**
-- 2px orange focus rings on all interactive elements
-- Modal focus trap implementation
+- Visible focus rings on interactive elements
 - Tab order follows visual hierarchy
+- Modal focus trap implementation
 
-**Reduced Motion**
-- Toggle in QA panel
-- Badge indicator when active
-- All animations respect system preference
+**Data Test IDs**
+All interactive elements and important content areas have `data-testid` attributes:
+- Sections: `section-hero`, `section-video-preview`, `section-features`, `section-pricing`, `section-workflows`, `section-faq`
+- Banners: `banner-promo`, `banner-users`, `banner-pricing-promo`
+- Headings: `heading-hero`, `heading-features`, `heading-pricing`, `heading-faq`
+- Cards: `card-feature-[name]`, `card-pricing-[tier]`, `card-workflow-[name]`
+- Buttons: `button-get-started`, `button-try-demo`, `button-pricing-[tier]`, `button-workflow-[name]`, etc.
+- Inputs: `input-faq-search`
+- Category buttons: `button-faq-category-[id]`
+- Accordion: `accordion-faq`, `faq-trigger-[n]`
 
-## Images
+## Key UI Patterns
 
-**Hero Section**
-- Large hero image showcasing AI-generated app examples or abstract tech visualization
-- WebP format with PNG fallback
-- Srcset for responsive sizing: 768w, 1440w, 1920w
-- Sizes: `(max-width: 768px) 100vw, 1440px`
-- Loading: `eager` (above fold)
-- Decoding: `async`
-- Alt: Descriptive text about FlashFusion's capabilities
+### Glass Morphism
+Used throughout for elevated content:
+```tsx
+className="bg-card/80 backdrop-blur-sm border border-border"
+```
 
-**Feature Cards**
-- Icon-based illustrations (use icon libraries: Heroicons or Lucide)
-- No custom SVG generation
+### Gradient Backgrounds
+For promotional banners and special sections:
+```tsx
+className="bg-gradient-to-r from-pink-500/20 to-pink-600/20 backdrop-blur-md border border-pink-500/30"
+```
 
-**Open Graph Image**
-- `public/og/default.png` - 1200×630px
-- Shows FlashFusion branding and key value proposition
+### Colored Icon Containers
+12x12 rounded squares with gradient backgrounds:
+```tsx
+<div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
+  <Icon className="w-6 h-6 text-accent-foreground" />
+</div>
+```
 
-**Background Texture**
-- `public/grain.png` - Seamless grain texture at 5% opacity
-- Overlays gradient mesh for premium feel
+### Badge Patterns
+- Promotional: `bg-pink-500 text-white border-0` (50% OFF badges)
+- Feature status: `bg-[color]-500/20 text-[color]-300 border-0`
+- Outline: `variant="outline"` for complexity indicators
+
+### Pricing Display
+```tsx
+<div className="flex items-baseline gap-2">
+  <span className="text-4xl font-bold">$14.50</span>
+  <span className="text-muted-foreground line-through">$29</span>
+  <span className="text-sm text-muted-foreground">/mo</span>
+</div>
+```
+
+## Content Guidelines
+
+### Hero Headline
+Exact text: "Transform Ideas Into **Reality With AI**"
+- "Transform Ideas Into" in white
+- "Reality With AI" in gradient (gold → cyan → purple)
+
+### Promotional Messaging
+- "Limited Time Launch Offer: **50% OFF** for 4 months"
+- "Join **10,000+** creators building the future"
+- "Limited spots available" urgency badge
+
+### Feature Card Badges
+- AI Code Generation: "99.9% accuracy"
+- Content Creation: "No limits"
+- One-Click Deploy: "Instant deploy"
+- Revenue Streams: "Up to $5,000/mo"
+- Enterprise Security: "100% secure"
+- Analytics & Insights: "Real-time data"
+
+### Pricing Tiers
+1. **Starter Pro** - $14.50/mo (was $29) - "For indie innovators"
+2. **Professional Pro** - $39.50/mo (was $79) - "Best for growing businesses" (Most Popular)
+3. **Enterprise Pro** - $99.50/mo (was $199) - "For large organizations"
+
+### Stats
+- **10,000+** Active Creators
+- **50M+** Lines of Code Generated
+- **99.9%** Uptime
 
 ## Trust & Polish Elements
 
 **Social Proof**
-- Metrics prominently displayed
-- Rating with stars (AggregateRating schema)
-- Trust badges in hero
+- Metrics prominently displayed in video section
+- Company trust badges (TechCorp, Innovate Co, Digital Agency, Creative Studio, StartupLab)
+- "Trusted by innovative teams worldwide"
 
-**Consent & Privacy**
-- ConsentBanner: Cookie consent + AI disclosure
-- "⚠︎ AI-generated content may require review" notice near outputs
-- Privacy-first messaging throughout
+**Guarantees** (in pricing section)
+- ✓ 30-day money-back guarantee
+- ✗ Cancel anytime
+- 🛡️ 24/7 support included
 
 **Professional Polish**
-- Error boundaries with helpful copy
-- 404 page with clear navigation back
+- Glass morphism throughout
+- Consistent hover states with `hover-elevate`
+- Smooth animations respecting motion preferences
+- Comprehensive error handling
 - Loading states with branded skeletons
-- Graceful degradation for all features
 
-**Legal Pages**
-- Privacy, Terms, Status - clean, readable layouts
-- Maximum prose width for text content
-- Clear hierarchy and navigation
-
-This design system creates a **cinematic, premium developer experience** that balances visual impact with performance, accessibility, and enterprise-grade polish.
+This design system creates a **professional, enterprise-grade dark SaaS platform** that balances visual impact with usability, accessibility, and trust-building elements.
