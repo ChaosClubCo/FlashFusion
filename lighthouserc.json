@@ -4,7 +4,7 @@
       "numberOfRuns": 3,
       "staticDistDir": "./dist/public",
       "url": [
-        "http://localhost/"
+        "http://localhost:5000/"
       ],
       "settings": {
         "preset": "desktop",
@@ -12,29 +12,56 @@
           "rttMs": 40,
           "throughputKbps": 10240,
           "cpuSlowdownMultiplier": 1
+        },
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1350,
+          "height": 940,
+          "deviceScaleFactor": 1,
+          "disabled": false
         }
       }
     },
     "assert": {
       "preset": "lighthouse:recommended",
       "assertions": {
-        "categories:performance": ["warn", { "minScore": 0.8 }],
-        "categories:accessibility": ["warn", { "minScore": 0.85 }],
-        "categories:best-practices": ["warn", { "minScore": 0.85 }],
-        "categories:seo": ["warn", { "minScore": 0.85 }],
-        "first-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
-        "largest-contentful-paint": ["warn", { "maxNumericValue": 3000 }],
-        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.15 }],
-        "total-blocking-time": ["warn", { "maxNumericValue": 500 }],
-        "speed-index": ["warn", { "maxNumericValue": 4000 }],
+        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["warn", { "minScore": 0.90 }],
+        "categories:seo": ["warn", { "minScore": 0.90 }],
+        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+        "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 300 }],
+        "speed-index": ["warn", { "maxNumericValue": 3000 }],
+        "interactive": ["warn", { "maxNumericValue": 3500 }],
+        "max-potential-fid": ["warn", { "maxNumericValue": 130 }],
+        "uses-responsive-images": "warn",
+        "offscreen-images": "warn",
+        "unminified-css": "warn",
+        "unminified-javascript": "warn",
+        "unused-css-rules": "off",
+        "unused-javascript": "off",
+        "modern-image-formats": "warn",
+        "uses-optimized-images": "warn",
+        "uses-text-compression": "warn",
+        "uses-rel-preconnect": "warn",
+        "font-display": "warn",
+        "heading-order": "warn",
+        "html-has-lang": "error",
+        "meta-viewport": "error",
+        "document-title": "error",
+        "viewport": "error",
+        "is-crawlable": "error",
+        "canonical": "warn",
         "color-contrast": "off",
         "crawlable-anchors": "off",
         "errors-in-console": "off",
         "label-content-name-mismatch": "off",
-        "meta-viewport": "off",
         "network-dependency-tree-insight": "off",
-        "unused-css-rules": "off",
-        "unused-javascript": "off"
+        "without-javascript": "off",
+        "robots-txt": "off",
+        "hreflang": "off"
       }
     },
     "upload": {

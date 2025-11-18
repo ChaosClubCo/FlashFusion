@@ -6,7 +6,9 @@ type EventName =
   | 'pricing_view'
   | 'upgrade_click'
   | 'modal_open'
-  | 'consent_given';
+  | 'consent_given'
+  | 'demo_modal_opened'
+  | 'video_preview_clicked';
 
 type EventProps = Record<string, string | number | boolean>;
 

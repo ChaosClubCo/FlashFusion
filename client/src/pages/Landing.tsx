@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { Background } from '@/components/Background';
 import { ConsentBanner } from '@/components/ConsentBanner';
 import { UsageWarning } from '@/components/UsageWarning';
 import { LimitReachedModal } from '@/components/LimitReachedModal';
+import { DemoPreviewModal } from '@/components/DemoPreviewModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +26,9 @@ import {
 
 export default function Landing() {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const [, setLocation] = useLocation();
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [showDemoModal, setShowDemoModal] = useState(false);
   const [faqSearch, setFaqSearch] = useState('');
   const [faqCategory, setFaqCategory] = useState('all');
   const { data: usageData } = useUsageCheck(user?.id || '', isAuthenticated);
@@ -39,7 +42,7 @@ export default function Landing() {
     // Redirect unauthenticated users to workflows page
     if (!user) {
       analytics.track('cta_click', { authenticated: false, action: 'start_building' });
-      window.location.href = '/workflows';
+      setLocation('/workflows');
       return;
     }
     
@@ -55,7 +58,7 @@ export default function Landing() {
     incrementMutation.mutate(user.id, {
       onSuccess: () => {
         analytics.track('generation_completed');
-        window.location.href = '/workflows/ai-creation';
+        setLocation('/workflows/ai-creation');
       },
       onError: (error: any) => {
         // Invalidate cache to refetch current usage
@@ -159,10 +162,10 @@ export default function Landing() {
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-xl mx-auto">
                 <Button 
                   size="lg" 
-                  className="relative bg-accent hover:bg-accent/90 text-accent-foreground border-2 border-accent/80 shadow-lg shadow-accent/20 min-w-[240px] group"
+                  className="relative bg-accent hover:bg-accent/90 text-accent-foreground border-2 border-accent/80 shadow-lg shadow-accent/20 w-full sm:w-auto sm:min-w-[240px] group"
                   onClick={handleGenerate}
                   data-testid="button-get-started"
                 >
@@ -176,14 +179,15 @@ export default function Landing() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="bg-card/80 backdrop-blur-md border-border hover:bg-card min-w-[200px]"
-                  asChild
+                  className="bg-card/80 backdrop-blur-md border-border hover:bg-card w-full sm:w-auto sm:min-w-[200px]"
+                  onClick={() => {
+                    analytics.track('demo_modal_opened');
+                    setShowDemoModal(true);
+                  }}
                   data-testid="button-try-demo"
                 >
-                  <Link href="/workflows">
-                    <Play className="mr-2 w-4 h-4" />
-                    Try Interactive Demo
-                  </Link>
+                  <Play className="mr-2 w-4 h-4" />
+                  Try Interactive Demo
                 </Button>
               </div>
             </motion.div>
@@ -222,6 +226,10 @@ export default function Landing() {
                 <div className="mb-6 flex justify-center">
                   <button 
                     className="w-20 h-20 rounded-full bg-gradient-to-br from-accent/80 to-accent backdrop-blur-md border-2 border-accent/50 flex items-center justify-center shadow-2xl shadow-accent/30 hover:scale-110 transition-transform"
+                    onClick={() => {
+                      analytics.track('video_preview_clicked');
+                      setShowDemoModal(true);
+                    }}
                     data-testid="button-play-video"
                   >
                     <Play className="w-8 h-8 text-accent-foreground ml-1" />
@@ -526,6 +534,7 @@ export default function Landing() {
                   <CardContent>
                     <Button 
                       className="w-full mb-6 bg-accent hover:bg-accent/90 text-accent-foreground"
+                      onClick={() => setLocation('/pricing')}
                       data-testid="button-pricing-starter"
                     >
                       View plans & options
@@ -582,6 +591,7 @@ export default function Landing() {
                   <CardContent>
                     <Button 
                       className="w-full mb-6 bg-accent hover:bg-accent/90 text-accent-foreground shadow-lg shadow-accent/20"
+                      onClick={() => setLocation('/pricing')}
                       data-testid="button-pricing-professional"
                     >
                       View plans & options
@@ -643,6 +653,7 @@ export default function Landing() {
                     <Button 
                       variant="outline"
                       className="w-full mb-6 border-primary/30 hover:bg-primary/10"
+                      onClick={() => setLocation('/pricing')}
                       data-testid="button-pricing-enterprise"
                     >
                       View plans & options
@@ -1170,7 +1181,11 @@ export default function Landing() {
       <LimitReachedModal 
         isOpen={showLimitModal} 
         onClose={() => setShowLimitModal(false)}
-        onUpgrade={() => window.location.href = '/pricing'}
+        onUpgrade={() => setLocation('/pricing')}
+      />
+      <DemoPreviewModal 
+        isOpen={showDemoModal}
+        onClose={() => setShowDemoModal(false)}
       />
     </>
   );
