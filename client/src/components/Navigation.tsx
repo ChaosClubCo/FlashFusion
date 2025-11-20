@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'wouter';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { AuthButton } from './AuthButton';
 import { useI18n } from '@/i18n';
 import { featureFlags } from '@/utils/featureFlags';
 
@@ -47,6 +48,7 @@ export function Navigation() {
 
         <div className="flex items-center gap-2">
           {featureFlags.I18N_ENABLED && <LanguageSwitcher />}
+          <AuthButton />
         </div>
       </div>
     </nav>
