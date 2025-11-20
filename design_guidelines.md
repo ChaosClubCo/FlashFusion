@@ -1,7 +1,11 @@
-# FlashFusion Design Guidelines - Clean Light Theme
+# FlashFusion Design Guidelines - Hybrid Light/Dark Theme
 
 ## Design Approach
-**Professional Modern SaaS Platform**: Based on fusion-ai.base44.app design system featuring a clean, light aesthetic with subtle pastel gradients, blue/orange accent CTAs, and professional polish. Emphasizes clarity, accessibility, and modern web design best practices.
+**Hybrid Professional Platform**: FlashFusion uses a dual-theme system combining the best of both worlds:
+- **Landing Page**: Clean light aesthetic (matching fusion-ai.base44.app) with cinematic hero background image, subtle pastel gradients, and accessible dark text on light backgrounds
+- **Dashboards**: Cinematic gradient theme transitioning from light at the top to Deep Midnight (`#0A0F1C`) at the bottom, with Neon Fusion Blue (`#00C2FF`) and Fusion Orange (`#FF6A3D`) accents matching the official FlashFusion Brand Kit
+
+This approach prioritizes accessibility for first-time visitors while delivering a premium, cinematic "power user" experience for authenticated members.
 
 ## Core Design Elements
 

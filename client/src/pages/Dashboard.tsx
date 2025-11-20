@@ -1,235 +1,283 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '@/hooks/useAuth';
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'wouter';
+import { DashboardBackground } from '@/components/DashboardBackground';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Download, FileCode, Calendar, Layers } from 'lucide-react';
-import { format } from 'date-fns';
-import type { GeneratedProject } from '@shared/schema';
+import { Progress } from '@/components/ui/progress';
+import { useAuth } from '@/hooks/useAuth';
+import { useUsageCheck } from '@/hooks/useUsageTracking';
 import { analytics } from '@/utils/events';
+import { motion } from 'framer-motion';
+import { 
+  Zap, Rocket, Settings, CreditCard, FolderOpen,
+  TrendingUp, Code2, Sparkles, ArrowRight, Plus
+} from 'lucide-react';
 
 export default function Dashboard() {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-
-  // Fetch user's projects
-  const { data: projects, isLoading: projectsLoading } = useQuery<GeneratedProject[]>({
-    queryKey: ['/api/projects'],
-    enabled: isAuthenticated,
-  });
-
-  // Fetch usage stats
-  const { data: usageData, error: usageError } = useQuery({
-    queryKey: ['/api/usage/check', user?.id],
-    enabled: !!user?.id,
-    queryFn: async () => {
-      const response = await fetch('/api/usage/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user?.id }),
-      });
-      if (!response.ok) throw new Error('Failed to fetch usage stats');
-      return response.json();
-    },
-  });
+  const { user, isLoading } = useAuth();
+  const { data: usageData } = useUsageCheck(user?.id || '', !!user);
 
   useEffect(() => {
     analytics.track('dashboard_view');
   }, []);
 
-  const handleDownload = (projectId: string, projectTitle: string) => {
-    const downloadUrl = `/api/projects/${projectId}/download`;
-    window.open(downloadUrl, '_blank');
-    analytics.track('project_download', { projectId, projectTitle });
+  if (isLoading) {
+    return (
+      <>
+        <DashboardBackground />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00C2FF] mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading dashboard...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const planInfo = {
+    Free: { limit: 3, color: 'text-gray-400', bgColor: 'bg-gray-500/20' },
+    Pro: { limit: 50, color: 'text-[#00C2FF]', bgColor: 'bg-[#00C2FF]/20' },
+    Enterprise: { limit: Infinity, color: 'text-[#FF6A3D]', bgColor: 'bg-[#FF6A3D]/20' }
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Loading...</h2>
-          <p className="text-muted-foreground">Checking authentication</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Please Log In</h2>
-          <p className="text-muted-foreground mb-6">You need to be logged in to access your dashboard</p>
-          <Button asChild data-testid="button-login">
-            <a href="/api/login">Log In</a>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const currentPlan = (user?.plan || 'Free') as keyof typeof planInfo;
+  const plan = planInfo[currentPlan];
+  const usagePercent = usageData ? (usageData.generationsUsed / plan.limit) * 100 : 0;
 
   return (
     <>
       <Helmet>
         <title>Dashboard - FlashFusion</title>
-        <meta name="description" content="View and manage your AI-generated projects" />
+        <meta name="description" content="Manage your FlashFusion projects and monitor usage" />
       </Helmet>
 
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <DashboardBackground />
+
+      <div className="min-h-screen px-4 py-8">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2" data-testid="text-dashboard-title">
-              Dashboard
+          <motion.div
+            className="mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1 className="text-4xl md:text-5xl font-bold mb-3" data-testid="heading-dashboard">
+              <span className="bg-gradient-to-r from-[#00C2FF] to-[#6F51FF] bg-clip-text text-transparent">
+                Welcome back, {user?.firstName || 'Creator'}
+              </span>
             </h1>
-            <p className="text-muted-foreground">
-              Welcome back, {user?.firstName || user?.email || 'User'}!
+            <p className="text-lg text-foreground/70">
+              Let's build something amazing today
             </p>
+          </motion.div>
+
+          {/* Quick Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Usage Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="bg-card/40 backdrop-blur-md border-[#00C2FF]/30" data-testid="card-usage">
+                <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-foreground/80">Generations Used</CardTitle>
+                  <Zap className="w-4 h-4 text-[#00C2FF]" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-foreground mb-2">
+                    {usageData?.generationsUsed || 0} / {plan.limit === Infinity ? '∞' : plan.limit}
+                  </div>
+                  <Progress value={Math.min(usagePercent, 100)} className="h-2 mb-2" />
+                  <p className="text-xs text-muted-foreground">
+                    {plan.limit === Infinity ? 'Unlimited generations' : `${plan.limit - (usageData?.generationsUsed || 0)} remaining`}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Current Plan Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="bg-card/40 backdrop-blur-md border-[#FF6A3D]/30" data-testid="card-plan">
+                <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-foreground/80">Current Plan</CardTitle>
+                  <Rocket className="w-4 h-4 text-[#FF6A3D]" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-foreground mb-2">{currentPlan}</div>
+                  <Badge className={`${plan.bgColor} ${plan.color} border-0`}>
+                    {currentPlan === 'Free' ? 'Upgrade Available' : 'Active'}
+                  </Badge>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Projects Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card className="bg-card/40 backdrop-blur-md border-[#6F51FF]/30" data-testid="card-projects">
+                <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-foreground/80">Total Projects</CardTitle>
+                  <FolderOpen className="w-4 h-4 text-[#6F51FF]" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-foreground mb-2">0</div>
+                  <p className="text-xs text-muted-foreground">
+                    Start your first project
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Revenue Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <Card className="bg-card/40 backdrop-blur-md border-emerald-500/30" data-testid="card-revenue">
+                <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-foreground/80">Est. Revenue</CardTitle>
+                  <TrendingUp className="w-4 h-4 text-emerald-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-foreground mb-2">$0</div>
+                  <p className="text-xs text-muted-foreground">
+                    From 0 active projects
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
 
-          {/* Usage Stats */}
-          <Card className="mb-8" data-testid="card-usage-stats">
-            <CardHeader>
-              <CardTitle>Usage Statistics</CardTitle>
-              <CardDescription>Your current plan and usage</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {usageError ? (
-                <p className="text-sm text-muted-foreground">
-                  Unable to load usage statistics. Please try again later.
-                </p>
-              ) : !usageData ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i}>
-                      <Skeleton className="h-4 w-20 mb-2" />
-                      <Skeleton className="h-8 w-24" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Plan</p>
-                    <Badge variant="default" className="text-lg capitalize">
-                      {user?.plan || 'Free'}
-                    </Badge>
+          {/* Quick Actions */}
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            {/* Create Project Card */}
+            <Card className="bg-gradient-to-br from-[#00C2FF]/10 to-[#6F51FF]/10 backdrop-blur-md border-[#00C2FF]/30 hover-elevate" data-testid="card-create-project">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#00C2FF] to-[#6F51FF] flex items-center justify-center">
+                    <Code2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Generations Used</p>
-                    <p className="text-2xl font-bold" data-testid="text-usage-count">
-                      {usageData.currentUsage} / {usageData.usageLimit}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Remaining</p>
-                    <p className="text-2xl font-bold text-primary">
-                      {usageData.usageLimit - usageData.currentUsage}
-                    </p>
+                    <CardTitle className="text-foreground">Start New Project</CardTitle>
+                    <CardDescription className="text-foreground/60">Generate AI-powered applications</CardDescription>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Projects Section */}
-          <div className="mb-4">
-            <h2 className="text-2xl font-bold mb-4">Your Projects</h2>
-          </div>
-
-          {/* Loading State */}
-          {projectsLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <Skeleton className="h-6 w-3/4 mb-2" />
-                    <Skeleton className="h-4 w-full" />
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className="h-20 w-full" />
-                  </CardContent>
-                  <CardFooter>
-                    <Skeleton className="h-10 w-full" />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!projectsLoading && (!projects || projects.length === 0) && (
-            <Card className="text-center py-12" data-testid="card-empty-state">
+              </CardHeader>
               <CardContent>
-                <FileCode className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No Projects Yet</h3>
-                <p className="text-muted-foreground mb-6">
-                  Start creating AI-powered applications to see them here
-                </p>
-                <Button asChild data-testid="button-create-project">
-                  <a href="/#workflows">Create Your First Project</a>
-                </Button>
+                <Link href="/workflows">
+                  <Button 
+                    className="w-full bg-[#00C2FF] hover:bg-[#00C2FF]/90 text-white"
+                    data-testid="button-new-project"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Project
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
-          )}
 
-          {/* Projects Grid */}
-          {!projectsLoading && projects && projects.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project) => {
-                const files = JSON.parse(project.files) as Array<{ path: string; content: string }>;
-                const metadata = project.metadata ? JSON.parse(project.metadata) : {};
+            {/* Upgrade Card */}
+            {currentPlan === 'Free' && (
+              <Card className="bg-gradient-to-br from-[#FF6A3D]/10 to-pink-500/10 backdrop-blur-md border-[#FF6A3D]/30 hover-elevate" data-testid="card-upgrade">
+                <CardHeader>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF6A3D] to-pink-500 flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-foreground">Upgrade to Pro</CardTitle>
+                      <CardDescription className="text-foreground/60">Unlock unlimited generations</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Link href="/billing">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-[#FF6A3D] to-pink-500 hover:opacity-90 text-white"
+                      data-testid="button-upgrade"
+                    >
+                      View Plans
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
 
-                return (
-                  <Card key={project.id} className="hover-elevate" data-testid={`card-project-${project.id}`}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <CardTitle className="text-lg" data-testid={`text-project-title-${project.id}`}>
-                          {project.title}
-                        </CardTitle>
-                        <Badge variant="secondary" className="shrink-0">
-                          {project.projectType}
-                        </Badge>
-                      </div>
-                      <CardDescription className="line-clamp-2">
-                        {project.description || 'No description'}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <Layers className="h-4 w-4" />
-                          <span>{files.length} files</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          <span>{format(new Date(project.createdAt), 'MMM d, yyyy')}</span>
-                        </div>
-                        {metadata.model && (
-                          <div className="text-xs">
-                            Generated with {metadata.model}
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        onClick={() => handleDownload(project.id, project.title)}
-                        className="w-full"
-                        variant="default"
-                        data-testid={`button-download-${project.id}`}
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        Download
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+            {/* Quick Links */}
+            <Card className="bg-card/40 backdrop-blur-md border-border/50" data-testid="card-quick-links">
+              <CardHeader>
+                <CardTitle className="text-foreground">Quick Links</CardTitle>
+                <CardDescription className="text-foreground/60">Access your most-used features</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Link href="/projects">
+                  <Button variant="outline" className="w-full justify-start" data-testid="link-projects">
+                    <FolderOpen className="w-4 h-4 mr-2" />
+                    My Projects
+                  </Button>
+                </Link>
+                <Link href="/settings">
+                  <Button variant="outline" className="w-full justify-start" data-testid="link-settings">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Account Settings
+                  </Button>
+                </Link>
+                <Link href="/billing">
+                  <Button variant="outline" className="w-full justify-start" data-testid="link-billing">
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Billing & Usage
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Recent Projects (Empty State) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <Card className="bg-card/40 backdrop-blur-md border-border/50" data-testid="card-recent-projects">
+              <CardHeader>
+                <CardTitle className="text-foreground">Recent Projects</CardTitle>
+                <CardDescription className="text-foreground/60">Your latest generated applications</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <FolderOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No projects yet</h3>
+                  <p className="text-muted-foreground mb-6">Create your first AI-powered application to get started</p>
+                  <Link href="/workflows">
+                    <Button className="bg-[#00C2FF] hover:bg-[#00C2FF]/90 text-white" data-testid="button-create-first-project">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Your First Project
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </>
