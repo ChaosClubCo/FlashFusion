@@ -23,6 +23,7 @@ import {
   Play, Search, CheckCircle2, XCircle, Clock,
   Rocket, Gift, Star, ChevronDown
 } from 'lucide-react';
+import heroImage from '@assets/generated_images/futuristic_ai_workspace_hero.png';
 
 export default function Landing() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -91,6 +92,21 @@ export default function Landing() {
       <div className="min-h-screen">
         {/* Hero Section */}
         <section className="relative px-4 pt-32 pb-16" data-testid="section-hero">
+          {/* Hero Background Image with Gradient Overlay */}
+          <div className="absolute inset-0 -z-10">
+            <img 
+              src={heroImage} 
+              alt="Futuristic AI workspace" 
+              className="w-full h-full object-cover"
+            />
+            <div 
+              className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95"
+              style={{
+                backdropFilter: 'blur(2px)'
+              }}
+            />
+          </div>
+
           <div className="max-w-7xl mx-auto">
             {/* Promotional Banner */}
             <motion.div 

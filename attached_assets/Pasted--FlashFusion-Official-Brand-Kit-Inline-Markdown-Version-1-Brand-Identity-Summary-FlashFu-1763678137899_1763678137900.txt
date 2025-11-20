@@ -1,0 +1,389 @@
+🎨 FlashFusion — Official Brand Kit
+
+(Inline Markdown Version)
+
+#1 — Brand Identity Summary
+
+FlashFusion is a cinematic, AI-forward creative engine, built for generating apps, experiences, and ecommerce content at production quality.
+The brand merges neon-tech energy, cinematic gradients, and high-contrast clarity, infused with precision, velocity, and intelligence.
+
+#2 — Logo Usage
+Primary Logo
+
+FlashFusion Wordmark — Neon-blue gradient with soft-orange accents
+
+Use on: dark backgrounds (#0A0F1C, black, deep gradient surfaces)
+
+Secondary Logo
+
+Monochrome Wordmark (white or black)
+
+Use on: cluttered, noisy, or image-based backgrounds
+
+Mark (Icon)
+
+FF Monospark Icon — Simplified abstract energy-spark bolt
+
+Use as: favicon, app icon, agent badge, dashboard nav icon
+
+Clearspace:
+Maintain 1x logo height margin around all sides.
+Minimum Width:
+
+Wordmark: 140px
+
+Icon: 48px
+
+#3 — Core Color System (FlashFusion Prime Palette)
+Primary
+Name	Hex	Usage
+Neon Fusion Blue	#00C2FF	Buttons, accents, hero gradients
+Fusion Orange	#FF6A3D	Highlights, CTA, motion cues
+Deep Midnight	#0A0F1C	Backgrounds, app shell, video frames
+Secondary
+Name	Hex	Usage
+Quantum Violet	#6F51FF	Secondary accents, shadows
+Ultrawhite	#F5F9FF	Text on dark UI
+Carbon Slate	#1C1F27	Card backgrounds, UI surfaces
+#4 — Extended Brand Palettes (Your Stored 10 Essences)
+1. Neon Ethereal Tech
+
+#00F0FF
+
+#0A0F1C
+
+#6AF0F4
+
+#0E6171
+
+2. Industrial Warm Minimalism
+
+#E3D5C3
+
+#C7B299
+
+#8C7350
+
+#3E3B36
+
+3. Ember Pulse Energy
+
+#FF6A3D
+
+#FF3A1F
+
+#2B0A00
+
+#731A00
+
+4. Deep Atlantic Serenity
+
+#003D5C
+
+#005A7A
+
+#9ED4E6
+
+#DFF8FF
+
+5. Retro Vapor Accelerate
+
+#FF71CE
+
+#01CDFE
+
+#05FFA1
+
+#B967FF
+
+6. Organic Earth Modern
+
+#8F9779
+
+#C9D6B9
+
+#5D6D52
+
+#353F2F
+
+7. Chrome Noir Precision
+
+#0A0A0A
+
+#1C1C1C
+
+#9FA6B2
+
+#E5E7EB
+
+8. Solar Soft Cinematic
+
+#FFE6A7
+
+#FFC46B
+
+#FF924D
+
+#4C2C00
+
+9. Midnight Quantum Gradient
+
+#0A0F1C
+
+#102543
+
+#1C3566
+
+#4D6B9C
+
+10. Glass Forest Hyperreal
+
+#1A352F
+
+#2E5E4E
+
+#89C0A7
+
+#D4F2E3
+
+#5 — Typography
+Headings
+
+Inter Tight — Bold / Semi-Bold
+
+Modern, tight, tech-forward
+
+Used for: dashboard headers, hero titles, tool names
+
+Body
+
+Inter
+
+Clean, neutral, legible
+
+Used everywhere content flows
+
+Monospace (Developer Surfaces)
+
+JetBrains Mono
+
+Code, editor UI, logs, CLI outputs
+
+Primary for FlashFusion Studio apps, agents, and builder interfaces
+
+#6 — Motion Identity
+
+FlashFusion uses smooth, cinematic motion, inspired by Sora-grade pacing and camera physics.
+
+Motion Principles
+
+Accelerate → Glide → Ease
+
+Magnetic UI elements
+
+Energy-trailing cursor highlights
+
+Parallax layers in hero scenes
+
+3D hover states (R3F compatible)
+
+Timing Standards
+
+Micro-interactions: 140–220ms
+
+Page transitions: 260–360ms
+
+Cinematic tool reveals: 600–900ms
+
+#7 — Iconography
+
+Lucide Icons (primary) — outline, crisp, minimal
+
+Custom FF Icons (secondary) — neon stroke, inner glow variants
+
+Stroke Width: 1.8px
+
+Corner Radius: 4px micro-round
+
+#8 — Photography / Cinematic Style
+
+FlashFusion visuals follow hyperreal, cinematic, neon-edge grading.
+
+Look & Feel
+
+Dark mode dominant
+
+High-contrast rim lighting
+
+Blue–orange color script
+
+Gentle bloom
+
+Sharp depth-of-field for focus
+
+Volumetric atmosphere in hero shots
+
+IMAX-style wide-lens staging
+
+#9 — Brand Voice & Tone
+Personality
+
+Precise
+
+Confident
+
+Intelligent
+
+Slightly cinematic
+
+Creator-friendly
+
+Expert-to-expert clarity
+
+Writing Style
+
+Short, kinetic sentences
+
+High signal, low noise
+
+Avoid filler
+
+Emphasize: transformation, acceleration, capability
+
+Example Snippet:
+"Create faster. Build smarter. Let intelligence handle the rest."
+
+#10 — Component Library Tokens (Design → Dev)
+Base Spacing Scale
+2, 4, 6, 8, 12, 16, 20, 24, 32, 40, 48, 64
+
+Radius Tokens
+r-xs: 4px  
+r-sm: 6px  
+r-md: 10px  
+r-lg: 14px  
+r-xl: 20px  
+r-2xl: 32px  
+
+Shadow Tokens
+fx-soft: 0px 4px 10px rgba(0,0,0,0.25)
+fx-hard: 0px 8px 24px rgba(0,0,0,0.45)
+fx-glow: 0 0 12px rgba(0,194,255,0.65)
+
+Button Styles
+
+Primary
+
+bg: #00C2FF  
+hover: #11D2FF  
+text: #0A0F1C  
+radius: r-xl  
+shadow: fx-glow  
+
+
+Secondary
+
+bg: #1C1F27  
+border: 1px solid #00C2FF  
+text: #F5F9FF  
+hover: #252A35  
+
+#11 — Branding Across Platforms
+FlashFusion Website
+
+Neon Fusion Blue + Midnight
+
+Immersive hero with motion reveal
+
+Parallax architecture
+
+FlashFusion Studio (Builder / Agents / Dashboard)
+
+Carbon Slate + Neon Blue
+
+JetBrains Mono emphasis
+
+Terminal-grade gradients
+
+SparkLabs / Creator Tools
+
+Lighter blues and violets
+
+Softer, playful motion
+
+Higher saturation
+
+Enterprise & Dark Ops
+
+Chrome Noir Precision palette
+
+Minimal animation
+
+High fidelity, SOC-2 friendly
+
+#12 — Brand Kit JSON (Copy-Paste)
+{
+  "brand": "FlashFusion",
+  "logo": {
+    "primary": "FlashFusion Neon Wordmark",
+    "secondary": "Monochrome Wordmark",
+    "icon": "FF Monospark Icon"
+  },
+  "colors": {
+    "primary": {
+      "neonBlue": "#00C2FF",
+      "fusionOrange": "#FF6A3D",
+      "midnight": "#0A0F1C"
+    },
+    "secondary": {
+      "quantumViolet": "#6F51FF",
+      "ultrawhite": "#F5F9FF",
+      "carbonSlate": "#1C1F27"
+    },
+    "essencePalettes": [
+      "Neon Ethereal Tech",
+      "Industrial Warm Minimalism",
+      "Ember Pulse Energy",
+      "Deep Atlantic Serenity",
+      "Retro Vapor Accelerate",
+      "Organic Earth Modern",
+      "Chrome Noir Precision",
+      "Solar Soft Cinematic",
+      "Midnight Quantum Gradient",
+      "Glass Forest Hyperreal"
+    ]
+  },
+  "typography": {
+    "headings": "Inter Tight",
+    "body": "Inter",
+    "monospace": "JetBrains Mono"
+  },
+  "voice": {
+    "personality": ["Precise", "Confident", "Cinematic", "Intelligent"],
+    "style": ["Direct", "Expert", "High-signal"]
+  },
+  "motion": {
+    "principles": ["Accelerate-Glide-Ease", "Cinematic smoothness", "Magnetic UI"],
+    "timing": { "micro": "140-220ms", "page": "260-360ms", "cinematic": "600-900ms" }
+  }
+}
+
+#13 — Recommended Next Steps
+
+Generate FlashFusion UI Component Library in Tailwind + Figma tokens
+
+Produce Sora-2 brand anthem video prompt using this kit
+
+Generate FlashFusion Studio UI Kit (V1)
+
+Create agent avatars in the Neon Ethereal Tech palette
+
+Build brand-consistent dashboard templates for:
+
+AI Builder
+
+Workflow Editor
+
+Vector/RAG UI
+
+Agent Orchestration
