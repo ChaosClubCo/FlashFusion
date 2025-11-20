@@ -1,5 +1,6 @@
 type EventName = 
   | 'landing_view'
+  | 'dashboard_view'
   | 'cta_click'
   | 'generation_started'
   | 'generation_completed'

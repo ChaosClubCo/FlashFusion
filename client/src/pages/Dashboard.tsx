@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   const currentPlan = (user?.plan || 'Free') as keyof typeof planInfo;
   const plan = planInfo[currentPlan];
-  const usagePercent = usageData ? (usageData.generationsUsed / plan.limit) * 100 : 0;
+  const usagePercent = usageData ? (usageData.currentUsage / plan.limit) * 100 : 0;
 
   return (
     <>
@@ -90,11 +90,11 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-3xl font-bold text-foreground mb-2">
-                    {usageData?.generationsUsed || 0} / {plan.limit === Infinity ? '∞' : plan.limit}
+                    {usageData?.currentUsage || 0} / {plan.limit === Infinity ? '∞' : plan.limit}
                   </div>
                   <Progress value={Math.min(usagePercent, 100)} className="h-2 mb-2" />
                   <p className="text-xs text-muted-foreground">
-                    {plan.limit === Infinity ? 'Unlimited generations' : `${plan.limit - (usageData?.generationsUsed || 0)} remaining`}
+                    {plan.limit === Infinity ? 'Unlimited generations' : `${plan.limit - (usageData?.currentUsage || 0)} remaining`}
                   </p>
                 </CardContent>
               </Card>
