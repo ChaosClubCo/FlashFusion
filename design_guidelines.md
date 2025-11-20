@@ -1,23 +1,23 @@
-# FlashFusion Design Guidelines - app.base44 Dark Theme
+# FlashFusion Design Guidelines - Clean Light Theme
 
 ## Design Approach
-**Professional Dark SaaS Platform**: Based on exact app.base44 design system featuring a dark navy aesthetic with orange accent CTAs, gradient text effects, and colored icon backgrounds. Emphasizes professional polish, AI-powered development capabilities, and enterprise-grade features.
+**Professional Modern SaaS Platform**: Based on fusion-ai.base44.app design system featuring a clean, light aesthetic with subtle pastel gradients, blue/orange accent CTAs, and professional polish. Emphasizes clarity, accessibility, and modern web design best practices.
 
 ## Core Design Elements
 
 ### A. Color Palette
 
 **Primary Brand Colors**
-- **Primary Blue**: `hsl(217 91% 60%)` - Used for accents, borders, and highlights
+- **Primary Blue**: `hsl(217 91% 60%)` - Used for accents, links, and highlights
 - **Accent Orange**: `hsl(24 95% 53%)` - Primary CTAs, badges, and important actions
 - **Cyan Accent**: `hsl(187 85% 50%)` - Supporting highlights and visual interest
 - **Purple Accent**: `hsl(280 75% 65%)` - Tertiary accent for special elements
 
-**Dark Navy Background System**
-- **Background**: `hsl(220 26% 6%)` - Very dark navy, primary background
-- **Card Background**: `hsl(220 24% 8%)` - Slightly elevated surfaces
-- **Border**: `hsl(220 18% 15%)` - Subtle borders and separators
-- **Card Border**: `hsl(220 18% 12%)` - Card-specific borders
+**Light Clean Background System**
+- **Background**: `hsl(0 0% 98%)` - Clean off-white, primary background
+- **Card Background**: `hsl(0 0% 100%)` - White cards, slightly elevated
+- **Border**: `hsl(0 0% 89%)` - Subtle gray borders and separators
+- **Card Border**: `hsl(0 0% 91%)` - Card-specific borders
 
 **Gradient Text Effects**
 - **Gradient Gold**: `hsl(45 93% 58%)` - "Reality" in hero headline
@@ -26,8 +26,8 @@
 - Usage: `bg-gradient-to-r from-[hsl(var(--gradient-gold))] via-[hsl(var(--gradient-text-cyan))] to-[hsl(var(--gradient-text-purple))] bg-clip-text text-transparent`
 
 **Text Colors**
-- **Foreground**: `hsl(0 0% 95%)` - Primary text color
-- **Muted Foreground**: `hsl(0 0% 65%)` - Secondary/supporting text
+- **Foreground**: `hsl(0 0% 9%)` - Primary dark text color
+- **Muted Foreground**: `hsl(0 0% 40%)` - Secondary/supporting gray text
 
 **Colored Icon Backgrounds** (for feature cards)
 - Orange: `from-accent to-accent/80` - AI Code Generation
@@ -139,7 +139,7 @@
 **Parallax Background**
 - Subtle vertical movement: 0 → -64px over 30s
 - Disabled when `prefers-reduced-motion` active
-- Dark navy gradient mesh with very subtle radial gradients
+- Light gradient mesh with subtle pastel blue, cyan, orange, and purple accents
 
 **Micro-interactions**
 - Button hover states (built-in via `hover-elevate`)
@@ -193,8 +193,8 @@ className="bg-gradient-to-r from-pink-500/20 to-pink-600/20 backdrop-blur-md bor
 ```
 
 ### Badge Patterns
-- Promotional: `bg-pink-500 text-white border-0` (50% OFF badges)
-- Feature status: `bg-[color]-500/20 text-[color]-300 border-0`
+- Promotional: `bg-pink-500 text-white border-0` (50% OFF badges - white text on colored background)
+- Feature status: `bg-[color]-500/20 text-[color]-700 border-0` (darker text for light theme visibility)
 - Outline: `variant="outline"` for complexity indicators
 
 ### Pricing Display
@@ -210,7 +210,7 @@ className="bg-gradient-to-r from-pink-500/20 to-pink-600/20 backdrop-blur-md bor
 
 ### Hero Headline
 Exact text: "Transform Ideas Into **Reality With AI**"
-- "Transform Ideas Into" in white
+- "Transform Ideas Into" in dark foreground color (`text-foreground`)
 - "Reality With AI" in gradient (gold → cyan → purple)
 
 ### Promotional Messaging
@@ -255,4 +255,4 @@ Exact text: "Transform Ideas Into **Reality With AI**"
 - Comprehensive error handling
 - Loading states with branded skeletons
 
-This design system creates a **professional, enterprise-grade dark SaaS platform** that balances visual impact with usability, accessibility, and trust-building elements.
+This design system creates a **professional, modern light SaaS platform** that balances clean aesthetics with usability, accessibility, and trust-building elements.
