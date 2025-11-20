@@ -269,7 +269,7 @@ export default function Dashboard() {
                   <h3 className="text-lg font-semibold text-foreground mb-2">No projects yet</h3>
                   <p className="text-muted-foreground mb-6">Create your first AI-powered application to get started</p>
                   <Link href="/workflows">
-                    <Button className="bg-[#00C2FF] hover:bg-[#00C2FF]/90 text-white" data-testid="button-create-first-project">
+                    <Button className="bg-[#00C2FF] text-white" data-testid="button-create-first-project">
                       <Plus className="w-4 h-4 mr-2" />
                       Create Your First Project
                     </Button>

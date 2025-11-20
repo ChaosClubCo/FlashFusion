@@ -92,7 +92,7 @@ export default function Settings() {
 
                 <Separator />
 
-                <Button className="bg-[#00C2FF] hover:bg-[#00C2FF]/90 text-white" data-testid="button-save-profile">
+                <Button className="bg-[#00C2FF] text-white" data-testid="button-save-profile">
                   Save Changes
                 </Button>
               </CardContent>

@@ -9,7 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
-import { LogIn, LogOut, User } from 'lucide-react';
+import { LogIn, LogOut, User, LayoutDashboard, FolderOpen, CreditCard, Settings } from 'lucide-react';
+import { Link } from 'wouter';
 
 export function AuthButton() {
   const { user, isLoading, isAuthenticated } = useAuth();
@@ -65,6 +66,31 @@ export function AuthButton() {
             )}
           </div>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild data-testid="menu-item-dashboard">
+          <Link href="/dashboard" className="cursor-pointer flex items-center">
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            <span>Dashboard</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild data-testid="menu-item-projects">
+          <Link href="/projects" className="cursor-pointer flex items-center">
+            <FolderOpen className="mr-2 h-4 w-4" />
+            <span>Projects</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild data-testid="menu-item-billing">
+          <Link href="/billing" className="cursor-pointer flex items-center">
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span>Billing</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild data-testid="menu-item-settings">
+          <Link href="/settings" className="cursor-pointer flex items-center">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => window.location.href = '/api/logout'}

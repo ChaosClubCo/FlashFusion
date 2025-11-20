@@ -36,7 +36,7 @@ export default function Projects() {
             </div>
 
             <Link href="/workflows">
-              <Button className="bg-[#00C2FF] hover:bg-[#00C2FF]/90 text-white" data-testid="button-new-project">
+              <Button className="bg-[#00C2FF] text-white" data-testid="button-new-project">
                 <Plus className="w-4 h-4 mr-2" />
                 New Project
               </Button>
@@ -83,7 +83,7 @@ export default function Projects() {
                     Create your first AI-generated application and it will appear here
                   </p>
                   <Link href="/workflows">
-                    <Button className="bg-[#00C2FF] hover:bg-[#00C2FF]/90 text-white" data-testid="button-create-first">
+                    <Button className="bg-[#00C2FF] text-white" data-testid="button-create-first">
                       <Plus className="w-4 h-4 mr-2" />
                       Create Your First Project
                     </Button>
