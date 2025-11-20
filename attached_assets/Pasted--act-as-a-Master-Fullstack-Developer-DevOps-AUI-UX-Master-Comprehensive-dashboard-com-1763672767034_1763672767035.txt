@@ -1,0 +1,195 @@
+/**
+ * @act as a: Master Fullstack Developer (DevOps/AUI/UX Master)
+ * Comprehensive dashboard component integrating metrics from all 10 strategic dashboards.
+ * Provides live, actionable views into Reliability, Cost, and AI Execution Health.
+ * NOTE: Charting is implemented via styled divs/SVG placeholders to eliminate external library dependencies.
+ */
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+
+// --- MOCK UTILITIES ---
+
+// Utility to generate structured mock data simulating audit logs and APM metrics
+const useDashboardMetrics = () => {
+    const generateRandom = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const generateSeries = (count, max) => Array.from({ length: count }, () => generateRandom(1, max));
+
+    return useMemo(() => ({
+        // 1. Reliability & Health
+        uptime: '99.94%',
+        p95Latency: generateRandom(450, 800), // Target < 800ms
+        cpuUsage: generateRandom(50, 75),
+        memoryUsage: generateRandom(60, 85),
+        transientErrorRate: (generateRandom(10, 19) / 10).toFixed(2), // Target < 2.00%
+        permanentErrorCount: generateRandom(2, 8),
+
+        // 2. AI Execution & Cost
+        cacheHitRate: generateRandom(88, 95), // Target > 85%
+        totalTokensDay: generateRandom(500000, 1500000), // 0.5M to 1.5M
+        totalCostUSD: (generateRandom(150, 400) / 100).toFixed(2), // $1.50 to $4.00
+        llmCostRatio: generateRandom(60, 80), // % of cost due to LLM vs Tools
+        
+        // 3. Monetization & Policy
+        proTierUsers: generateRandom(150, 300),
+        policyViolationCount: generateRandom(10, 50),
+        contextWindowViolations: generateRandom(5, 15),
+        
+        // 4. Quality & Context
+        ragRetrievalLatency: generateRandom(150, 350), // Latency for vector search
+        ragHitRate: generateRandom(75, 90),
+        contextWasteRatio: generateRandom(10, 30), // % of context tokens wasted
+        
+        // 5. CI/CD & Debt
+        buildSuccessRate: '98.5%',
+        testCoverage: generateRandom(82, 88), // Target > 80%
+        criticalVulnerabilities: generateRandom(0, 3),
+
+        // 6. Forecasting (Time Series Mock)
+        tokenForecast: generateSeries(7, 200000), // Daily forecast trend
+    }), [/* Recalculate only if dependency changes (none here) */]);
+};
+
+
+// --- HELPERS (AUI/UX) ---
+
+const StatCard = ({ title, value, unit, color = 'text-indigo-400', border = 'border-indigo-600' }) => (
+    <div className={`p-4 rounded-xl shadow-lg bg-gray-800 border-l-4 ${border} transition hover:bg-gray-700`}>
+        <p className="text-sm text-gray-400">{title}</p>
+        <h3 className={`text-3xl font-extrabold mt-1 ${color}`}>{value}{unit}</h3>
+    </div>
+);
+
+const GaugeChart = ({ value, label, max = 100, isCost = false }) => {
+    const percentage = Math.min(100, (value / max) * 100);
+    const color = percentage > 85 ? 'bg-red-500' : percentage > 60 ? 'bg-yellow-500' : 'bg-green-500';
+    const indicator = isCost ? (percentage < 50 ? 'bg-green-500' : 'bg-red-500') : color;
+
+    return (
+        <div className="p-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+            <p className="text-sm text-gray-400 mb-2">{label}</p>
+            <div className="h-3 bg-gray-700 rounded-full">
+                <div 
+                    className={`h-full rounded-full ${indicator}`} 
+                    style={{ width: `${percentage}%` }}
+                ></div>
+            </div>
+            <p className="text-xl font-bold mt-2 text-white">{value}{isCost ? '%' : unit}</p>
+        </div>
+    );
+};
+
+
+// --- MAIN DASHBOARD COMPONENT ---
+
+const MonitoringDashboard = () => {
+    const [activeTab, setActiveTab] = useState('reliability');
+    const metrics = useDashboardMetrics();
+
+    const renderTabs = useCallback(() => (
+        <div className="flex space-x-4 border-b border-gray-700 px-6 pt-2">
+            <TabButton name="System Health & DevOps" tabKey="reliability" currentTab={activeTab} setActiveTab={setActiveTab} />
+            <TabButton name="AI Economics & Policy" tabKey="economics" currentTab={activeTab} setActiveTab={setActiveTab} />
+            <TabButton name="Quality & Security" tabKey="quality" currentTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
+    ), [activeTab]);
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'reliability':
+                // Dashboard 1 (Reliability) & 6 (External Tool Health)
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                        <StatCard title="API Uptime (SLO)" value={metrics.uptime} unit="" border="border-green-500" color="text-green-400" />
+                        <StatCard title="P95 Latency" value={metrics.p95Latency} unit="ms" border="border-yellow-500" color="text-yellow-400" />
+                        <StatCard title="Transient Error Rate" value={metrics.transientErrorRate} unit="%" border="border-red-500" color="text-red-400" />
+
+                        <GaugeChart value={metrics.cpuUsage} label="CPU Utilization (Agent Engine)" max={100} unit="%" />
+                        <GaugeChart value={metrics.memoryUsage} label="Memory Usage (Code Executor)" max={100} unit="%" />
+                        <StatCard title="Permanent Errors" value={metrics.permanentErrorCount} unit="/day" border="border-red-800" color="text-red-300" />
+                        
+                        <div className="md:col-span-3">
+                            <h4 className="text-lg text-gray-300 mb-3">Microservices Handoff & Failure Map (Dashboard 6)</h4>
+                            <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                                <p className="font-mono text-sm text-yellow-500">Code Executor Circuit Breaker: <span className="text-red-400">HALF-OPEN</span></p>
+                                <p className="font-mono text-sm text-yellow-500">RAG Vector Service Status: <span className="text-green-400">UP</span></p>
+                                <p className="font-mono text-sm text-yellow-500">Latencies: RAG ({metrics.ragRetrievalLatency}ms) / Workflow (280ms)</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'economics':
+                // Dashboard 2 (Cost) & 3 (Monetization) & 7 (Forecasting)
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6">
+                        <StatCard title="Total LLM Cost" value={metrics.totalCostUSD} unit="$" border="border-red-500" color="text-red-400" />
+                        <StatCard title="Cache Hit Rate" value={metrics.cacheHitRate} unit="%" border="border-green-500" color="text-green-400" />
+                        <StatCard title="Total Tokens Used" value={metrics.totalTokensDay / 1000} unit="K" border="border-indigo-500" color="text-indigo-400" />
+                        <GaugeChart value={metrics.llmCostRatio} label="LLM Cost / Total Cost Ratio" max={100} isCost={true} />
+
+                        <div className="md:col-span-2">
+                            <h4 className="text-lg text-gray-300 mb-3">Monetization & Policy Gating (Dashboard 3)</h4>
+                            <StatCard title="Policy Violations (Daily)" value={metrics.policyViolationCount} unit="" border="border-red-600" color="text-red-300" />
+                            <StatCard title="Context Window Violations" value={metrics.contextWindowViolations} unit="" border="border-red-400" color="text-red-200" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <h4 className="text-lg text-gray-300 mb-3">Strategic Forecasting (Dashboard 7)</h4>
+                            <div className="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                                <p className="text-gray-400">Token Usage Forecast (7 Days)</p>
+                                <div className="h-20 w-full flex items-end space-x-1 mt-2">
+                                    {metrics.tokenForecast.map((value, index) => (
+                                        <div 
+                                            key={index} 
+                                            className="w-1/7 bg-indigo-500 rounded-t-sm" 
+                                            style={{ height: `${(value / 200000) * 100}%` }} 
+                                            title={`${value} Tokens`}
+                                        ></div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'quality':
+                // Dashboard 9 (CI/CD) & 10 (RAG Quality) & 8 (Context Efficiency)
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                        <h4 className="md:col-span-3 text-xl text-indigo-400 border-b border-gray-700 pb-2 mb-3">Code Quality & Deployment Health (Dashboard 9)</h4>
+                        <StatCard title="Test Coverage" value={metrics.testCoverage} unit="%" border="border-green-500" color="text-green-400" />
+                        <StatCard title="Build Success Rate" value={metrics.buildSuccessRate} unit="" border="border-green-500" color="text-green-400" />
+                        <StatCard title="Critical CI/CD Vulnerabilities" value={metrics.criticalVulnerabilities} unit="" border="border-red-700" color="text-red-300" />
+
+                        <h4 className="md:col-span-3 text-xl text-indigo-400 border-b border-gray-700 pb-2 mb-3 mt-4">AI Reasoning & Context Quality (Dashboards 8 & 10)</h4>
+                        <StatCard title="RAG Retrieval Latency" value={metrics.ragRetrievalLatency} unit="ms" border="border-yellow-500" color="text-yellow-400" />
+                        <StatCard title="Context Window Waste" value={metrics.contextWasteRatio} unit="%" border="border-indigo-400" color="text-indigo-300" />
+                        <StatCard title="RAG Document Hit Rate" value={metrics.ragHitRate} unit="%" border="border-green-500" color="text-green-400" />
+                    </div>
+                );
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-full bg-gray-900 overflow-hidden">
+            <h1 className="text-2xl font-extrabold text-white px-6 pt-4">Operational Dashboard</h1>
+            {renderTabs()}
+            <div className="flex-grow overflow-y-auto">
+                {renderContent()}
+            </div>
+        </div>
+    );
+};
+
+const TabButton = ({ name, tabKey, currentTab, setActiveTab }) => (
+    <button
+        className={`px-4 py-3 text-sm font-semibold transition-colors duration-200 border-b-2 ${
+            currentTab === tabKey
+                ? 'border-indigo-500 text-indigo-400'
+                : 'border-transparent text-gray-400 hover:text-white'
+        }`}
+        onClick={() => setActiveTab(tabKey)}
+    >
+        {name}
+    </button>
+);
+
+export default MonitoringDashboard;
