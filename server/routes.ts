@@ -41,43 +41,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Auth endpoint - Reference: blueprint:javascript_log_in_with_replit
-  // Development bypass: auto-authenticate with demo user if no session exists
   app.get('/api/auth/user', async (req: any, res, next) => {
-    // In development, bypass auth and use demo user if not authenticated
-    if (process.env.NODE_ENV === 'development') {
-      if (!req.isAuthenticated()) {
-        try {
-          const demoUser = await storage.getUser('demo-user-1');
-          if (demoUser) {
-            return res.json(demoUser);
-          }
-          return res.status(404).json({ message: "Demo user not found" });
-        } catch (error) {
-          console.error("Error fetching demo user:", error);
-          return res.status(500).json({ message: "Failed to fetch demo user" });
+    // In development, return demo user for unauthenticated requests
+    if (process.env.NODE_ENV === 'development' && !req.isAuthenticated()) {
+      try {
+        const demoUser = await storage.getUser('demo-user-1');
+        if (demoUser) {
+          return res.json(demoUser);
         }
-      } else {
-        // Development with real session (when testing Replit Auth locally)
-        try {
-          const userId = req.user.claims.sub;
-          const user = await storage.getUser(userId);
-          return res.json(user);
-        } catch (error) {
-          console.error("Error fetching user:", error);
-          return res.status(500).json({ message: "Failed to fetch user" });
-        }
+        console.error("Demo user not found in development mode");
+        return res.status(500).json({ message: "Demo user not found" });
+      } catch (error) {
+        console.error("Error fetching demo user:", error);
+        return res.status(500).json({ message: "Failed to fetch demo user" });
       }
     }
-    
-    // Production: require authentication
+
+    // Use isAuthenticated middleware to handle token refresh
     return isAuthenticated(req, res, async () => {
       try {
         const userId = req.user.claims.sub;
         const user = await storage.getUser(userId);
-        res.json(user);
+        
+        if (!user) {
+          console.error(`Authenticated user ${userId} not found in database`);
+          return res.status(404).json({ message: "User not found" });
+        }
+        
+        return res.json(user);
       } catch (error) {
         console.error("Error fetching user:", error);
-        res.status(500).json({ message: "Failed to fetch user" });
+        return res.status(500).json({ message: "Failed to fetch user" });
       }
     });
   });

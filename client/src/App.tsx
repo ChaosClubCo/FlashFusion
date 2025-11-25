@@ -9,6 +9,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Skeleton } from "@/components/Skeleton";
 import { InstallPWA } from "@/components/InstallPWA";
 import { Navigation } from "@/components/Navigation";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { useAuth } from "@/hooks/useAuth";
 import { featureFlags } from "@/utils/featureFlags";
 import { I18nProvider } from "@/i18n";
 
@@ -47,20 +49,60 @@ function PageLoader() {
 }
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
-        <Route path="/" component={Landing} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/projects" component={Projects} />
-        <Route path="/settings" component={Settings} />
-        <Route path="/billing" component={Billing} />
+        {/* Root path: Landing for unauthenticated, Dashboard for authenticated */}
+        <Route path="/">
+          {() => {
+            if (isLoading) {
+              return <PageLoader />;
+            }
+            return isAuthenticated ? <Dashboard /> : <Landing />;
+          }}
+        </Route>
+        
+        {/* Authenticated routes */}
+        <Route path="/dashboard">
+          {() => (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          )}
+        </Route>
+        <Route path="/projects">
+          {() => (
+            <ProtectedRoute>
+              <Projects />
+            </ProtectedRoute>
+          )}
+        </Route>
+        <Route path="/settings">
+          {() => (
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          )}
+        </Route>
+        <Route path="/billing">
+          {() => (
+            <ProtectedRoute>
+              <Billing />
+            </ProtectedRoute>
+          )}
+        </Route>
+        
+        {/* Public routes - accessible to all */}
         <Route path="/pricing" component={Pricing} />
         <Route path="/qa" component={QA} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/status" component={Status} />
         <Route path="/offline" component={Offline} />
+        
+        {/* Feature routes */}
         <Route path="/workflows" component={Workflows} />
         <Route path="/image-generation" component={ImageGeneration} />
         <Route path="/workflows/ai-creation" component={AICreation} />
@@ -69,6 +111,8 @@ function Router() {
         <Route path="/workflows/analytics" component={Analytics} />
         <Route path="/workflows/security" component={Security} />
         <Route path="/workflows/quality" component={Quality} />
+        
+        {/* 404 fallback */}
         <Route component={NotFound} />
       </Switch>
     </Suspense>
