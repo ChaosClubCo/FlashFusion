@@ -17,10 +17,6 @@ export default function NotFound() {
       <div className="relative min-h-screen">
         <div 
           className="relative z-10"
-          style={{
-            background: 'rgba(14, 14, 16, 0.85)',
-            backdropFilter: 'blur(6px)',
-          }}
         >
           <main id="main" className="min-h-screen flex items-center justify-center px-4">
             <div className="text-center max-w-md">

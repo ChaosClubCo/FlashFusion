@@ -133,7 +133,7 @@ export default function Landing() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <div className="bg-card/40 backdrop-blur-md border border-border rounded-full px-5 py-2.5 flex items-center gap-2" data-testid="banner-users">
+              <div className="bg-card border border-border rounded-full px-5 py-2.5 flex items-center gap-2" data-testid="banner-users">
                 <Users className="w-4 h-4 text-primary" />
                 <span className="text-sm text-muted-foreground">
                   Join <span className="text-foreground font-semibold">10,000+</span> creators building the future
@@ -163,15 +163,15 @@ export default function Landing() {
 
               {/* Feature Pills */}
               <div className="flex flex-wrap justify-center gap-3 mb-10">
-                <div className="bg-card/50 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-full px-4 py-2 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-accent"></div>
                   <span className="text-sm text-foreground">10x Faster Development</span>
                 </div>
-                <div className="bg-card/50 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-full px-4 py-2 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
                   <span className="text-sm text-foreground">Enterprise Security</span>
                 </div>
-                <div className="bg-card/50 backdrop-blur-sm border border-border rounded-full px-4 py-2 flex items-center gap-2">
+                <div className="bg-card border border-border rounded-full px-4 py-2 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-purple-400"></div>
                   <span className="text-sm text-foreground">Built-in Monetization</span>
                 </div>
@@ -195,7 +195,7 @@ export default function Landing() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="bg-card/80 backdrop-blur-md border-border hover:bg-card w-full sm:w-auto sm:min-w-[200px]"
+                  className="bg-card border-border hover:bg-card/90 w-full sm:w-auto sm:min-w-[200px]"
                   onClick={() => {
                     analytics.track('demo_modal_opened');
                     setShowDemoModal(true);
@@ -282,7 +282,7 @@ export default function Landing() {
               className="mt-12 text-center"
             >
               <p className="text-sm text-muted-foreground mb-6">Trusted by innovative teams worldwide</p>
-              <div className="flex flex-wrap justify-center items-center gap-8 opacity-50">
+              <div className="flex flex-wrap justify-center items-center gap-8 opacity-80">
                 {['TechCorp', 'Innovate Co', 'Digital Agency', 'Creative Studio', 'StartupLab'].map((company) => (
                   <div key={company} className="text-lg font-semibold text-foreground/60">
                     {company}
@@ -529,7 +529,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Card className="h-full hover-elevate relative bg-card/80 backdrop-blur-sm border-border" data-testid="card-pricing-starter">
+                <Card className="h-full hover-elevate relative bg-card border-border" data-testid="card-pricing-starter">
                   <Badge variant="secondary" className="absolute -top-3 left-6 bg-accent/20 text-accent border-0">
                     50% OFF
                   </Badge>
@@ -586,7 +586,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Card className="h-full hover-elevate relative bg-gradient-to-b from-accent/10 to-card/80 backdrop-blur-sm border-accent/50 shadow-lg shadow-accent/20" data-testid="card-pricing-professional">
+                <Card className="h-full hover-elevate relative bg-gradient-to-b from-accent/20 to-card border-accent/50 shadow-lg shadow-accent/20" data-testid="card-pricing-professional">
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground border-0 shadow-lg shadow-accent/30">
                     Most Popular
                   </Badge>
@@ -647,7 +647,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <Card className="h-full hover-elevate relative bg-card/80 backdrop-blur-sm border-border" data-testid="card-pricing-enterprise">
+                <Card className="h-full hover-elevate relative bg-card border-border" data-testid="card-pricing-enterprise">
                   <Badge variant="secondary" className="absolute -top-3 right-6 bg-primary/20 text-primary border-0">
                     Enterprise
                   </Badge>
@@ -767,7 +767,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-workflow-ai">
+                <Card className="h-full hover-elevate bg-card border-border" data-testid="card-workflow-ai">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center mb-4">
                       <Sparkles className="w-6 h-6 text-accent-foreground" />
@@ -806,7 +806,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-workflow-publish">
+                <Card className="h-full hover-elevate bg-card border-border" data-testid="card-workflow-publish">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4">
                       <Cloud className="w-6 h-6 text-white" />
@@ -845,7 +845,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-workflow-commerce">
+                <Card className="h-full hover-elevate bg-card border-border" data-testid="card-workflow-commerce">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4">
                       <DollarSign className="w-6 h-6 text-white" />
@@ -884,7 +884,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-workflow-security">
+                <Card className="h-full hover-elevate bg-card border-border" data-testid="card-workflow-security">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4">
                       <Shield className="w-6 h-6 text-white" />
@@ -923,7 +923,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-workflow-analytics">
+                <Card className="h-full hover-elevate bg-card border-border" data-testid="card-workflow-analytics">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center mb-4">
                       <BarChart3 className="w-6 h-6 text-white" />
@@ -962,7 +962,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-workflow-qa">
+                <Card className="h-full hover-elevate bg-card border-border" data-testid="card-workflow-qa">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-4">
                       <CheckCircle2 className="w-6 h-6 text-white" />
@@ -1034,7 +1034,7 @@ export default function Landing() {
                 <Input
                   type="search"
                   placeholder="Search FAQs..."
-                  className="pl-10 bg-card/80 backdrop-blur-sm border-border h-12"
+                  className="pl-10 bg-card border-border h-12"
                   value={faqSearch}
                   onChange={(e) => setFaqSearch(e.target.value)}
                   data-testid="input-faq-search"
@@ -1065,7 +1065,7 @@ export default function Landing() {
                   <Button
                     key={category.id}
                     variant={faqCategory === category.id ? 'default' : 'outline'}
-                    className={faqCategory === category.id ? 'bg-accent text-accent-foreground' : 'bg-card/80 backdrop-blur-sm'}
+                    className={faqCategory === category.id ? 'bg-accent text-accent-foreground' : 'bg-card'}
                     onClick={() => setFaqCategory(category.id)}
                     data-testid={`button-faq-category-${category.id}`}
                   >
@@ -1084,7 +1084,7 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
-                <AccordionItem value="item-1" className="bg-card/80 backdrop-blur-sm border border-border rounded-lg px-6">
+                <AccordionItem value="item-1" className="bg-card border border-border rounded-lg px-6">
                   <AccordionTrigger className="text-left hover:no-underline" data-testid="faq-trigger-1">
                     How long does it take to build an app with FlashFusion?
                   </AccordionTrigger>
@@ -1093,7 +1093,7 @@ export default function Landing() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-2" className="bg-card/80 backdrop-blur-sm border border-border rounded-lg px-6">
+                <AccordionItem value="item-2" className="bg-card border border-border rounded-lg px-6">
                   <AccordionTrigger className="text-left hover:no-underline" data-testid="faq-trigger-2">
                     What technologies does FlashFusion support?
                   </AccordionTrigger>
@@ -1102,7 +1102,7 @@ export default function Landing() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-3" className="bg-card/80 backdrop-blur-sm border border-border rounded-lg px-6">
+                <AccordionItem value="item-3" className="bg-card border border-border rounded-lg px-6">
                   <AccordionTrigger className="text-left hover:no-underline" data-testid="faq-trigger-3">
                     Can I customize the generated code?
                   </AccordionTrigger>
@@ -1111,7 +1111,7 @@ export default function Landing() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-4" className="bg-card/80 backdrop-blur-sm border border-border rounded-lg px-6">
+                <AccordionItem value="item-4" className="bg-card border border-border rounded-lg px-6">
                   <AccordionTrigger className="text-left hover:no-underline" data-testid="faq-trigger-4">
                     What's included in the 50% OFF promotion?
                   </AccordionTrigger>
@@ -1120,7 +1120,7 @@ export default function Landing() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-5" className="bg-card/80 backdrop-blur-sm border border-border rounded-lg px-6">
+                <AccordionItem value="item-5" className="bg-card border border-border rounded-lg px-6">
                   <AccordionTrigger className="text-left hover:no-underline" data-testid="faq-trigger-5">
                     Is my code and data secure?
                   </AccordionTrigger>
@@ -1129,7 +1129,7 @@ export default function Landing() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-6" className="bg-card/80 backdrop-blur-sm border border-border rounded-lg px-6">
+                <AccordionItem value="item-6" className="bg-card border border-border rounded-lg px-6">
                   <AccordionTrigger className="text-left hover:no-underline" data-testid="faq-trigger-6">
                     Do you offer a free trial?
                   </AccordionTrigger>
@@ -1151,7 +1151,7 @@ export default function Landing() {
               <p className="text-muted-foreground mb-4">
                 Still have questions? Our support team is available 24/7.
               </p>
-              <Button variant="outline" className="bg-card/80 backdrop-blur-sm border-border" data-testid="button-contact-support">
+              <Button variant="outline" className="bg-card border-border" data-testid="button-contact-support">
                 Contact Support
               </Button>
             </motion.div>

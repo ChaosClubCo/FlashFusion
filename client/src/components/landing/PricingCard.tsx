@@ -40,7 +40,7 @@ export function PricingCard({
   featureIconColor = 'text-accent',
   buttonVariant = 'default',
   buttonClassName,
-  cardClassName = 'h-full hover-elevate relative bg-card/80 backdrop-blur-sm border-border',
+  cardClassName = 'h-full hover-elevate relative bg-card border-border',
   onSelect,
   delay = 0
 }: PricingTierProps) {

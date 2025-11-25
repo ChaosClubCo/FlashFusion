@@ -29,10 +29,6 @@ export default function QA() {
       <div className="relative min-h-screen">
         <div 
           className="relative z-10"
-          style={{
-            background: 'rgba(14, 14, 16, 0.85)',
-            backdropFilter: 'blur(6px)',
-          }}
         >
           <main id="main" className="py-20 px-4">
             <div className="max-w-4xl mx-auto">

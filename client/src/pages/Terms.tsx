@@ -15,13 +15,9 @@ export default function Terms() {
       <div className="relative min-h-screen">
         <div 
           className="relative z-10"
-          style={{
-            background: 'rgba(14, 14, 16, 0.85)',
-            backdropFilter: 'blur(6px)',
-          }}
         >
           <main id="main" className="py-20 px-4">
-            <div className="max-w-4xl mx-auto prose prose-invert">
+            <div className="max-w-4xl mx-auto prose prose-slate dark:prose-invert">
               <h1>Terms of Service</h1>
               <p className="lead">Last updated: October 15, 2025</p>
 

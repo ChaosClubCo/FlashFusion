@@ -28,7 +28,7 @@ export function WorkflowCard({
 }: WorkflowCardProps) {
   return (
     <AnimatedDiv delay={delay}>
-      <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid={`card-workflow-${id}`}>
+      <Card className="h-full hover-elevate bg-card border-border" data-testid={`card-workflow-${id}`}>
         <CardHeader>
           <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${iconColor} flex items-center justify-center mb-4`}>
             <Icon className="w-6 h-6 text-accent-foreground" />

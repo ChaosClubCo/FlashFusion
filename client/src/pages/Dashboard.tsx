@@ -83,7 +83,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              <Card className="bg-card/40 backdrop-blur-md border-[#00C2FF]/30" data-testid="card-usage">
+              <Card className="bg-card border-[#00C2FF]/30" data-testid="card-usage">
                 <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-foreground/80">Generations Used</CardTitle>
                   <Zap className="w-4 h-4 text-[#00C2FF]" />
@@ -106,7 +106,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Card className="bg-card/40 backdrop-blur-md border-[#FF6A3D]/30" data-testid="card-plan">
+              <Card className="bg-card border-[#FF6A3D]/30" data-testid="card-plan">
                 <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-foreground/80">Current Plan</CardTitle>
                   <Rocket className="w-4 h-4 text-[#FF6A3D]" />
@@ -126,7 +126,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Card className="bg-card/40 backdrop-blur-md border-[#6F51FF]/30" data-testid="card-projects">
+              <Card className="bg-card border-[#6F51FF]/30" data-testid="card-projects">
                 <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-foreground/80">Total Projects</CardTitle>
                   <FolderOpen className="w-4 h-4 text-[#6F51FF]" />
@@ -146,7 +146,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <Card className="bg-card/40 backdrop-blur-md border-emerald-500/30" data-testid="card-revenue">
+              <Card className="bg-card border-emerald-500/30" data-testid="card-revenue">
                 <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium text-foreground/80">Est. Revenue</CardTitle>
                   <TrendingUp className="w-4 h-4 text-emerald-400" />
@@ -224,7 +224,7 @@ export default function Dashboard() {
             )}
 
             {/* Quick Links */}
-            <Card className="bg-card/40 backdrop-blur-md border-border/50" data-testid="card-quick-links">
+            <Card className="bg-card border-border/50" data-testid="card-quick-links">
               <CardHeader>
                 <CardTitle className="text-foreground">Quick Links</CardTitle>
                 <CardDescription className="text-foreground/60">Access your most-used features</CardDescription>
@@ -258,7 +258,7 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <Card className="bg-card/40 backdrop-blur-md border-border/50" data-testid="card-recent-projects">
+            <Card className="bg-card border-border/50" data-testid="card-recent-projects">
               <CardHeader>
                 <CardTitle className="text-foreground">Recent Projects</CardTitle>
                 <CardDescription className="text-foreground/60">Your latest generated applications</CardDescription>
