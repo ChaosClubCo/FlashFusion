@@ -79,8 +79,8 @@ export default function Pricing() {
         <div 
           className="relative z-10"
           style={{
-            background: 'rgba(14, 14, 16, 0.85)',
-            backdropFilter: 'blur(6px)',
+            background: 'transparent',
+            backdropFilter: 'none',
           }}
         >
           <main id="main" className="py-20 px-4">

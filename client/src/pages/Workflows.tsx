@@ -92,7 +92,7 @@ export default function Workflows() {
         {/* Hero Section */}
         <section className="relative py-20">
           {/* Background gradient mesh */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-cyan-500/20 opacity-50" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-transparent to-cyan-500/40 opacity-100" />
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItMnptMCAwdjJ6bTAtMnYyem0yIDB2Mnptdw0tMnYyem0tMiAwdjJ6bTAgMHYyem0yLTJ2MnptMCAydjJ6bS0yIDB2MnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30" />
 
           <div className="container relative z-10">

@@ -11,10 +11,10 @@ export function Background() {
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(circle at 20% 50%, hsla(217, 70%, 85%, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 80%, hsla(187, 70%, 90%, 0.25) 0%, transparent 50%),
-            radial-gradient(circle at 40% 20%, hsla(24, 80%, 92%, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 60% 60%, hsla(280, 60%, 90%, 0.2) 0%, transparent 50%)
+            radial-gradient(circle at 20% 50%, hsla(217, 70%, 85%, 0.6) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, hsla(187, 70%, 90%, 0.5) 0%, transparent 50%),
+            radial-gradient(circle at 40% 20%, hsla(24, 80%, 92%, 0.4) 0%, transparent 50%),
+            radial-gradient(circle at 60% 60%, hsla(280, 60%, 90%, 0.5) 0%, transparent 50%)
           `,
         }}
         animate={
