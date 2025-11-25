@@ -100,7 +100,7 @@ export default function Landing() {
               className="w-full h-full object-cover"
             />
             <div 
-              className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/30"
+              className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/40"
               style={{
                 backdropFilter: 'blur(1px)'
               }}
