@@ -37,15 +37,15 @@ export default function Dashboard() {
     );
   }
 
-  const planInfo = {
+  const planInfo: Record<string, { limit: number; color: string; bgColor: string }> = {
     Free: { limit: 3, color: 'text-gray-400', bgColor: 'bg-gray-500/20' },
     Pro: { limit: 50, color: 'text-[#00C2FF]', bgColor: 'bg-[#00C2FF]/20' },
     Enterprise: { limit: Infinity, color: 'text-[#FF6A3D]', bgColor: 'bg-[#FF6A3D]/20' }
   };
 
-  const currentPlan = (user?.plan || 'Free') as keyof typeof planInfo;
-  const plan = planInfo[currentPlan];
-  const usagePercent = usageData ? (usageData.currentUsage / plan.limit) * 100 : 0;
+  const currentPlan = user?.plan || 'Free';
+  const plan = planInfo[currentPlan] || planInfo.Free;
+  const usagePercent = usageData && plan.limit !== Infinity ? (usageData.currentUsage / plan.limit) * 100 : 0;
 
   return (
     <>

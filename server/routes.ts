@@ -45,15 +45,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // In development, return demo user for unauthenticated requests
     if (process.env.NODE_ENV === 'development' && !req.isAuthenticated()) {
       try {
-        const demoUser = await storage.getUser('demo-user-1');
-        if (demoUser) {
-          return res.json(demoUser);
+        let demoUser = await storage.getUser('demo-user-1');
+        if (!demoUser) {
+          // Auto-create demo user if it doesn't exist
+          demoUser = await storage.upsertUser({
+            id: 'demo-user-1',
+            email: 'demo@flashfusion.dev',
+            firstName: 'Demo',
+            lastName: 'User',
+            profileImageUrl: null,
+            plan: 'Free',
+            currentUsage: 0,
+          });
+          console.log("Created demo user for development mode");
         }
-        console.error("Demo user not found in development mode");
-        return res.status(500).json({ message: "Demo user not found" });
+        return res.json(demoUser);
       } catch (error) {
-        console.error("Error fetching demo user:", error);
-        return res.status(500).json({ message: "Failed to fetch demo user" });
+        console.error("Error fetching/creating demo user:", error);
+        return res.status(500).json({ message: "Failed to get demo user" });
       }
     }
 
