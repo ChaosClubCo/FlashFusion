@@ -257,15 +257,15 @@ export default function Landing() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                  <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
+                  <div className="bg-transparent border border-border rounded-lg p-4">
                     <div className="text-3xl font-bold text-accent mb-1">10,000+</div>
                     <div className="text-sm text-muted-foreground">Active Creators</div>
                   </div>
-                  <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
+                  <div className="bg-transparent border border-border rounded-lg p-4">
                     <div className="text-3xl font-bold text-cyan-400 mb-1">50M+</div>
                     <div className="text-sm text-muted-foreground">Lines of Code Generated</div>
                   </div>
-                  <div className="bg-card/50 backdrop-blur-sm border border-border rounded-lg p-4">
+                  <div className="bg-transparent border border-border rounded-lg p-4">
                     <div className="text-3xl font-bold text-pink-400 mb-1">99.9%</div>
                     <div className="text-sm text-muted-foreground">Uptime</div>
                   </div>
@@ -323,7 +323,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-feature-code">
+                <Card className="h-full hover-elevate bg-transparent border-border" data-testid="card-feature-code">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center mb-4">
                       <Code2 className="w-6 h-6 text-accent-foreground" />
@@ -351,7 +351,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-feature-content">
+                <Card className="h-full hover-elevate bg-transparent border-border" data-testid="card-feature-content">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center mb-4">
                       <Sparkles className="w-6 h-6 text-white" />
@@ -379,7 +379,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-feature-deploy">
+                <Card className="h-full hover-elevate bg-transparent border-border" data-testid="card-feature-deploy">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4">
                       <Rocket className="w-6 h-6 text-white" />
@@ -407,7 +407,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-feature-revenue">
+                <Card className="h-full hover-elevate bg-transparent border-border" data-testid="card-feature-revenue">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4">
                       <DollarSign className="w-6 h-6 text-white" />
@@ -435,7 +435,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-feature-security">
+                <Card className="h-full hover-elevate bg-transparent border-border" data-testid="card-feature-security">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4">
                       <Shield className="w-6 h-6 text-white" />
@@ -463,7 +463,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
-                <Card className="h-full hover-elevate bg-card/80 backdrop-blur-sm border-border" data-testid="card-feature-analytics">
+                <Card className="h-full hover-elevate bg-transparent border-border" data-testid="card-feature-analytics">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4">
                       <BarChart3 className="w-6 h-6 text-white" />
