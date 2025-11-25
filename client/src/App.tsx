@@ -82,7 +82,7 @@ function App() {
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             <TooltipProvider>
-              {featureFlags.I18N_ENABLED && <Navigation />}
+              <Navigation />
               <Toaster />
               <Router />
               {featureFlags.PWA_ENABLED && <InstallPWA />}
